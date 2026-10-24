@@ -1,0 +1,159 @@
+{
+  "verifiedOn": "2026-10-24",
+  "referenceType": "Public client animation definitions; not a visual recording",
+  "clientVersion": "v4.2.116-hotfix-3",
+  "productPage": "https://www.spribe.co/games/aviator",
+  "launcher": "https://demo.spribe.io/launch/aviator?currency=USD&lang=EN",
+  "clientScript": "https://aviator-demo.spribegaming.com/main.41c3b83d282727f1.js",
+  "observations": {
+    "climbSeconds": 8,
+    "glideSecondsEachDirection": 4,
+    "xClimbEase": "quadratic out",
+    "yClimbEase": "quadratic in-out",
+    "glideEase": "quadratic in-out",
+    "curve": "single quadratic arc; horizontal tangent at the origin, control point at half the endpoint x",
+    "planeBasePixels": [
+      150,
+      74
+    ],
+    "planeScale": "arena width / 900, clamped from 0.65 to 1",
+    "takeoffPixels": [
+      21,
+      7
+    ],
+    "mount": "x = width - 1.5 aircraft widths; y = 1 aircraft height",
+    "glide": "x = width - 1 aircraft width; y = 3 aircraft heights",
+    "rayRevolutionSeconds": 36,
+    "glowColors": [
+      "#34B4FF",
+      "#913EF8",
+      "#C017B4"
+    ],
+    "glowThresholds": [
+      2,
+      10
+    ],
+    "glowColorBlendSeconds": 0.5,
+    "glowFadeInSeconds": 1,
+    "glowFadeOutSeconds": 1,
+    "flyAwaySeconds": 0.5,
+    "flyAwayVerticalPixels": 200,
+    "curveOnFlyAway": "cleared",
+    "planeOrientation": "fixed; the artwork supplies its upward angle",
+    "planeFrameCount": 4,
+    "planeFramesPerSecond": 7.5,
+    "planeAnchor": {
+      "x": 0.14,
+      "y": 0.9
+    }
+  },
+  "positionFixtures": [
+    {
+      "width": 1484,
+      "height": 730,
+      "positions": [
+        [
+          0,
+          21,
+          723
+        ],
+        [
+          2,
+          562.625,
+          641.875
+        ],
+        [
+          4,
+          949.5,
+          398.5
+        ],
+        [
+          6,
+          1181.625,
+          155.125
+        ],
+        [
+          8,
+          1259,
+          74
+        ],
+        [
+          9,
+          1268.375,
+          92.5
+        ],
+        [
+          10,
+          1296.5,
+          148
+        ],
+        [
+          11,
+          1324.625,
+          203.5
+        ],
+        [
+          12,
+          1334,
+          222
+        ],
+        [
+          14,
+          1296.5,
+          148
+        ],
+        [
+          16,
+          1259,
+          74
+        ]
+      ]
+    },
+    {
+      "width": 382,
+      "height": 434,
+      "positions": [
+        [
+          0,
+          21,
+          427
+        ],
+        [
+          2,
+          114.953125,
+          379.6375
+        ],
+        [
+          4,
+          182.0625,
+          237.55
+        ],
+        [
+          6,
+          222.328125,
+          95.4625
+        ],
+        [
+          8,
+          235.75,
+          48.1
+        ],
+        [
+          10,
+          260.125,
+          96.2
+        ],
+        [
+          12,
+          284.5,
+          144.3
+        ],
+        [
+          16,
+          235.75,
+          48.1
+        ]
+      ]
+    }
+  ]
+}

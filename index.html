@@ -1,0 +1,69 @@
+﻿<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#151515">
+  <title>Aviator — Flight Simulation</title>
+  <link rel="stylesheet" href="styles.css">
+  <link rel="preload" as="image" type="image/svg+xml" href="assets/plane/plane-0.svg">
+  <link rel="preload" as="image" type="image/svg+xml" href="assets/plane/plane-1.svg">
+  <link rel="preload" as="image" type="image/svg+xml" href="assets/plane/plane-2.svg">
+  <link rel="preload" as="image" type="image/svg+xml" href="assets/plane/plane-3.svg">
+</head>
+<body>
+  <div class="app">
+    <header class="top">
+      <a class="brand" href="index.html" aria-label="Aviator demo home">Aviator</a>
+      <div class="topright">
+        <span class="wallet" id="wallet"></span><span class="currency" id="currency"></span>
+        <button class="menuButton" id="menuButton" aria-label="Demo settings" aria-expanded="false" aria-controls="settings">☰</button>
+      </div>
+      <div class="settings" id="settings" hidden>
+        <strong>Flight simulation</strong>
+        <p>Virtual credits · Preset outcomes<br>All players and bets are illustrative.</p>
+        <div class="settingsActions"><button id="pause">Pause</button><button id="next">Next round ↻</button></div>
+        <span id="roundLabel"></span>
+      </div>
+    </header>
+    <div class="layout">
+      <aside class="bets" aria-label="Illustrative player bets">
+        <div class="tabs" role="tablist" aria-label="Player bets">
+          <button class="active" id="tab-all" data-tab="all" role="tab" aria-selected="true" aria-controls="betrows">All Bets</button>
+          <button id="tab-previous" data-tab="previous" role="tab" aria-selected="false" aria-controls="betrows">Previous</button>
+          <button id="tab-top" data-tab="top" role="tab" aria-selected="false" aria-controls="betrows">Top</button>
+        </div>
+        <div class="betSummary">
+          <div class="summaryTop"><div class="avatarStack" id="summaryAvatars"></div><strong id="totalWin">264.00</strong></div>
+          <div class="summaryBottom"><span><b id="count">167/180</b> Bets</span><span>Total win <span class="unit">USD</span></span></div>
+          <div class="summaryTrack"><span id="summaryProgress"></span></div>
+        </div>
+        <div class="tableHead"><span>Player</span><span>Bet <span class="unit">USD</span></span><span>X</span><span>Win <span class="unit">USD</span></span></div>
+        <div class="betrows" id="betrows" role="tabpanel" aria-labelledby="tab-all"></div>
+        <footer class="sideFooter"><span>◈ &nbsp;Virtual credits only</span><span>SIMULATION</span></footer>
+      </aside>
+      <main class="main">
+        <div class="winNotifications" id="winNotifications" aria-label="Cash-out notifications" role="region"></div>
+        <div class="historyBar">
+          <div class="history" id="history" aria-label="Previous round multipliers"></div>
+          <button class="historyButton" id="historyButton" aria-label="Show round history" aria-expanded="false" aria-controls="historyPopover">◷ <span>⌄</span></button>
+          <div class="historyPopover" id="historyPopover" hidden><strong>Round history</strong><div id="expandedHistory"></div></div>
+        </div>
+        <section class="arena" aria-label="Flight simulation">
+          <div class="funMode" title="Demo with virtual credits and predetermined outcomes">FUN MODE</div>
+          <div class="flightStage">
+            <svg id="flightSvg" viewBox="0 0 1000 500" preserveAspectRatio="none" aria-hidden="true"></svg>
+            <div id="status" class="centerStatus" role="status"></div>
+            <div class="spectators" title="Illustrative spectators"><div class="avatarStack" id="spectatorAvatars"></div><b>97</b></div>
+          </div>
+        </section>
+        <div class="controlRow" id="controlRow" aria-label="Virtual bet controls"></div>
+      </main>
+    </div>
+  </div>
+  <div class="toast" id="toast" role="alert" hidden></div>
+  <script src="config.js"></script>
+  <script src="flight.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
