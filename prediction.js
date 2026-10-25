@@ -27,6 +27,9 @@
     const unlockMs = timing(settings.unlockDurationMs, 1800);
     const holdMs = timing(settings.unlockHoldMs, 300);
     const revealMs = timing(settings.revealDurationMs, 720);
+    const result = $('predictResult');
+    const scanPlane = result.querySelector('[data-scan-plane]');
+    const scanTrail = result.querySelector('[data-scan-trail]');
     const motion = matchMedia('(prefers-reduced-motion: reduce)');
     const contact = settings.adminContact || {};
     const username = typeof contact.telegramUsername === 'string' ? contact.telegramUsername.trim().replace(/^@/, '') : '';
@@ -47,6 +50,17 @@
     let state = 'entry', watchId = 0, startedAt = 0, matches = false;
     let round = null, selected = null;
     const setValue = value => { $('predictValue').firstChild.nodeValue = value; };
+    function scan(progress) {
+      const t = Math.max(0,Math.min(1,progress));
+      result.style.setProperty('--scan-progress',String(t));
+      if (!scanPlane || !scanTrail) return;
+      const x = 12 + 276 * t, y = 144 - 112 * t * t;
+      scanTrail.setAttribute('d',`M12 144Q${12 + 138 * t} 144 ${x} ${y}`);
+      scanPlane.setAttribute('x',x - 8.12);
+      scanPlane.setAttribute('y',y - 25.74);
+      const frame = Math.floor(t * revealMs / 1000 * 7.5) % 4;
+      scanPlane.setAttribute('href',`assets/plane/plane-${frame}.svg`);
+    }
     const progress = value => {
       $('predictProgress').style.setProperty('--progress', value + '%');
       $('predictProgress').setAttribute('aria-valuenow', value);
@@ -67,6 +81,8 @@
     function reset() {
       watchId++;
       state = 'entry'; round = null; selected = null;
+      result.setAttribute('aria-busy','false');
+      scan(0);
       dialog.dataset.accessState = 'entry';
       dialog.setAttribute('aria-labelledby', 'predictAccessTitle');
       dialog.setAttribute('aria-describedby', 'predictAccessHelp');
@@ -92,6 +108,7 @@
       $('predictValue').setAttribute('aria-hidden', 'false');
       $('predictReady').hidden = true;
       $('predictResult').setAttribute('aria-busy', 'false');
+      scan(0);
       $('predictRun').disabled = !Number.isFinite(round?.target) || round.target < 1;
       $('predictRun').textContent = text.predictButton;
       $('predictStatus').textContent = $('predictRun').disabled ? 'No preset is available for this round.' : message;
@@ -143,6 +160,7 @@
       setValue(selected.target.toFixed(2));
       $('predictValue').setAttribute('aria-hidden', 'false');
       $('predictResult').setAttribute('aria-busy', 'false');
+      scan(0);
       $('predictReady').hidden = false;
       $('predictRun').disabled = false;
       $('predictRun').textContent = text.predictAgainButton;
@@ -159,7 +177,10 @@
         syncRound();
         if (state === 'spinning') {
           if (motion.matches || now - startedAt >= revealMs) settle();
-          else setValue((1 + ((Math.floor((now - startedAt) / 50) * 37) % 899) / 100).toFixed(2));
+          else {
+            scan((now - startedAt) / revealMs);
+            setValue((1 + ((Math.floor((now - startedAt) / 50) * 37) % 899) / 100).toFixed(2));
+          }
         }
       }
       requestAnimationFrame(time => watch(time, run));
@@ -207,11 +228,12 @@
       selected = { ...round };
       state = 'spinning'; startedAt = performance.now();
       $('predictRun').disabled = true;
-      $('predictRun').textContent = 'Revealing…';
+      $('predictRun').textContent = 'Scanning…';
       $('predictReady').hidden = true;
       $('predictResult').setAttribute('aria-busy', 'true');
+      scan(0);
       $('predictValue').setAttribute('aria-hidden', 'true');
-      $('predictStatus').textContent = `Reading the configured preset for round ${selected.id}…`;
+      $('predictStatus').textContent = `Scanning the preset preview for round ${selected.id}…`;
       if (motion.matches || revealMs === 0) settle();
     });
     function closed() {

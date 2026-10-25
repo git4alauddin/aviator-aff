@@ -70,3 +70,53 @@ body.aviatorLanding:after{display:none}
 @media(prefers-reduced-motion:reduce){.takeoffVisual,.flightProgress>span{transition:none}.registration-page .prediction-widget,.registration-page .deposit-widget{animation:none}.deposit-dialog[open]{animation:none}}
 
 .flightAccessEyebrow{text-align:center;color:#e66b87;font-size:9px;letter-spacing:1.7px;margin:0 0 17px}
+
+/* Deposit is the central visual; the plane stays a small supporting detail. */
+.depositWalletArt {
+    position: relative;
+    display: block;
+    width: 180px;
+    height: 108px;
+    margin: 10px auto 0;
+    overflow: visible;
+}
+.walletDepositShadow { fill: #090b124d; }
+.walletDepositBack { fill: #28202d; stroke: #b33c5c; stroke-width: 2; }
+.walletDepositSlot { fill: none; stroke: #ef6b8d; stroke-width: 2; stroke-linecap: round; }
+.walletDepositBody { stroke: #f36286; stroke-width: 1.8; }
+.walletDepositStitch { fill: none; stroke: #ffb3c33d; stroke-width: 1; stroke-dasharray: 2 3; }
+.walletDepositFlap { fill: #321c2c; stroke: #f589a3; stroke-width: 1.5; }
+.walletDepositStud { fill: #ffd1dc; stroke: none; }
+.walletDepositCoin > circle:first-child { fill: #e9af50; stroke: #ffdf9c; stroke-width: 1.5; }
+.walletCoinRim { fill: none; stroke: #96612f; stroke-width: .75; }
+.walletDepositCoin text { fill: #6d4023; font: 700 14px Arial, sans-serif; }
+.walletDepositArrow { fill: none; stroke: #d5a6b8; stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; }
+.walletDepositArrowEcho { opacity: .4; }
+.deposit-dialog[open] .walletDepositCoin { animation: wallet-coin-deposit 2.4s ease-in-out infinite; }
+.deposit-dialog[open] .walletDepositBody { animation: wallet-deposit-glow 2.4s ease-in-out infinite; }
+.deposit-dialog[open] .walletDepositArrow { animation: wallet-deposit-arrow 2.4s ease-in-out infinite; }
+.deposit-flight-caption { display: flex; justify-content: center; align-items: center; gap: 7px; }
+.deposit-flight-caption img { display: block; width: 24px; height: auto; opacity: .7; }
+
+@keyframes wallet-coin-deposit {
+    0% { transform: translateY(-10px); opacity: 0; }
+    15% { opacity: 1; }
+    60% { transform: translateY(27px); opacity: 1; }
+    78%, 100% { transform: translateY(34px); opacity: 0; }
+}
+@keyframes wallet-deposit-glow {
+    0%, 35%, 100% { filter: drop-shadow(0 0 3px #e505391a); }
+    65% { filter: drop-shadow(0 0 10px #e5053960); }
+}
+@keyframes wallet-deposit-arrow {
+    0%, 100% { transform: translateY(0); opacity: .45; }
+    50% { transform: translateY(4px); opacity: 1; }
+}
+@media (max-height: 700px) {
+    .depositWalletArt { height: 84px; margin-top: 4px; }
+}
+@media (prefers-reduced-motion: reduce) {
+    .deposit-dialog[open] .walletDepositCoin,
+    .deposit-dialog[open] .walletDepositBody,
+    .deposit-dialog[open] .walletDepositArrow { animation: none; }
+}

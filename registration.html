@@ -17,6 +17,9 @@
     <link rel="stylesheet" href="./prediction.css"/>
     <link rel="stylesheet" href="./css/aviator-site.css"/>
     <link rel="stylesheet" href="./css/aviator-theme.css"/>
+    <link rel="preload" as="image" href="./assets/plane/plane-1.svg"/>
+    <link rel="preload" as="image" href="./assets/plane/plane-2.svg"/>
+    <link rel="preload" as="image" href="./assets/plane/plane-3.svg"/>
     <link rel="preload" as="image" href="./assets/images/avatars/img.png"/>
     <link rel="preload" as="image" href="./assets/images/avatars/img_1.png"/>
     <link rel="preload" as="image" href="./assets/images/avatars/img_2.png"/>
@@ -84,9 +87,23 @@
         </button>
     </header>
     <div class="deposit-art" aria-hidden="true">
-        <span class="deposit-art-coordinate">AVIATOR / FLIGHT WALLET</span>
-        <svg class="depositFlightArt" viewBox="0 0 180 100"><path class="walletRunway" d="M8 88h164"/><path d="M8 84Q80 84 136 32"/><image href="assets/plane/plane-0.svg" x="90" y="1" width="84" height="42"/></svg>
-        <span class="deposit-art-caption">YOUR NEXT FLIGHT</span>
+        <svg class="depositWalletArt" viewBox="0 0 180 108">
+            <defs>
+                <linearGradient id="depositWalletFill" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#d7214c"/><stop offset="1" stop-color="#6c1533"/></linearGradient>
+                <clipPath id="depositCoinSlot"><rect x="66" y="0" width="48" height="57"/></clipPath>
+            </defs>
+            <ellipse class="walletDepositShadow" cx="90" cy="100" rx="47" ry="5"/>
+            <path class="walletDepositBack" d="M45 53V43q0-7 8-9l67-12q9-2 9 8v21"/>
+            <g clip-path="url(#depositCoinSlot)"><g class="walletDepositCoin"><circle cx="90" cy="21" r="12"/><circle class="walletCoinRim" cx="90" cy="21" r="9"/><text x="90" y="26" text-anchor="middle">₹</text></g></g>
+            <path class="walletDepositSlot" d="M55 45h68"/>
+            <g class="walletDepositBody">
+                <rect x="43" y="47" width="94" height="47" rx="9" fill="url(#depositWalletFill)"/>
+                <path class="walletDepositStitch" d="M51 59v22q0 5 6 5h61"/>
+                <path class="walletDepositFlap" d="M119 62h22v19h-22a9.5 9.5 0 0 1 0-19Z"/>
+                <circle class="walletDepositStud" cx="121" cy="71.5" r="2.5"/>
+            </g>
+            <g class="walletDepositArrow"><path d="M124 5v18m-5-5 5 5 5-5"/><path class="walletDepositArrowEcho" d="m119 27 5 5 5-5"/></g>
+        </svg>
     </div>
     <h2 id="deposit-title" class="deposit-title" tabindex="-1" data-deposit-heading>Minimum deposit</h2>
     <p class="deposit-amount" data-deposit-amount>₹500</p>
@@ -147,6 +164,11 @@
       <div class="predictGame"><span>FLIGHT PREVIEW</span><h2 id="predictGameName" tabindex="-1">Aviator</h2></div>
       <div class="predictRound"><span id="predictRoundLabel">Round 1</span><span id="predictRoundPhase">Upcoming</span></div>
       <div class="predictResult" id="predictResult" aria-busy="false">
+        <div class="predictScan" aria-hidden="true">
+          <div class="predictScanBeam"></div>
+          <svg class="predictScanFlight" viewBox="0 0 350 160" preserveAspectRatio="xMidYMid meet"><path data-scan-trail d="M12 144Q12 144 12 144"/><image data-scan-plane href="assets/plane/plane-0.svg" x="3.88" y="118.26" width="58" height="28.6"/></svg>
+          <span class="predictScanCaption">SCANNING PREVIEW</span>
+        </div>
         <svg class="predictTelemetry" viewBox="0 0 350 160" preserveAspectRatio="none" aria-hidden="true"><path class="predictTelemetryGrid" d="M0 40h350M0 80h350M0 120h350M70 0v160M140 0v160M210 0v160M280 0v160"/><path class="predictTelemetryCurve" d="M8 148Q178 148 326 24"/><circle cx="326" cy="24" r="3"/></svg>
         <span data-predict-text="resultLabel">Preset crash multiplier</span>
         <div class="predictValue" id="predictValue">—<small>x</small></div>

@@ -68,7 +68,7 @@ test("background time is excluded and cancelling releases frame/listener resourc
     assert.equal(environment.listeners.size, 0);
 });
 
-test("a stalled frame cannot skip 100%, unlocking, or trigger multiple handoffs", (t) => {
+test("a stalled frame cannot skip 100% or trigger multiple handoffs", (t) => {
     const environment = animationEnvironment(t);
     const stages = [];
     let completions = 0;
@@ -82,9 +82,8 @@ test("a stalled frame cannot skip 100%, unlocking, or trigger multiple handoffs"
     assert.equal(completions, 0);
     assert.deepEqual(stages, ["locked"]);
     for (let now = 100100; now <= 107000; now += 100) environment.tick(now);
-    assert.deepEqual(stages, ["locked", "complete", "unlocking", "unlocked"]);
+    assert.deepEqual(stages, ["locked", "complete", "unlocked"]);
     assert.equal(completions, 1);
     assert.equal(environment.callbacks.size, 0);
     assert.equal(environment.listeners.size, 0);
 });
-

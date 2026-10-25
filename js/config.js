@@ -23,6 +23,6 @@ export const config = Object.freeze({
     sequence: Object.freeze({
         fillMs: 1800,
         holdMs: 300,
-        unlockMs: 900,
+        unlockMs: 0,
     }),
 });

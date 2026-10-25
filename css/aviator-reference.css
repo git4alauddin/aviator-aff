@@ -1,0 +1,179 @@
+/* Aviator atmosphere on the original DM FIRST portal layout. */
+:root {
+    --bg: #0b0b10;
+    --green: #f32952;
+    --bright: #ffd6df;
+    --muted: #a48991;
+    --text: #e9e1e5;
+}
+
+body { background: radial-gradient(ellipse at 45% 20%, #43132055, transparent 65%), #0b0b10; }
+.ambient-light { background: radial-gradient(ellipse at 50% 5%, #e5053910, transparent 60%), linear-gradient(90deg, #0006, transparent 20% 80%, #0006); }
+.screen-texture { opacity: .055; }
+.portal {
+    border-color: #62303c;
+    background: linear-gradient(155deg, #201219ef, #101016f5 48%, #181016f5);
+    box-shadow: 0 0 0 7px #160d1370, 0 0 100px #e5053910, inset 0 0 70px #0006;
+}
+.portal::before {
+    background-image: linear-gradient(#ff527306 1px, transparent 1px), linear-gradient(90deg, #ff527306 1px, transparent 1px);
+}
+.frame-corners i { filter: drop-shadow(0 0 5px #f3295266); }
+.frame-track { border-color: #f329522a; }
+.wordmark { color: #fff1f5; }
+.brand-plane { width: 46px; height: auto; filter: drop-shadow(0 0 12px #e5053940); }
+.connection-status { color: #d6a5b2; }
+.hero-grid {
+    background-image: linear-gradient(#fc466910 1px, transparent 1px), linear-gradient(90deg, #fc466910 1px, transparent 1px);
+}
+.aviator-sky { position: absolute; inset: -18px -15px 45px; overflow: hidden; pointer-events: none; mask-image: radial-gradient(ellipse, #000 15%, transparent 72%); }
+.aviator-rays {
+    position: absolute; width: 680px; height: 680px; left: calc(50% - 340px); top: calc(40% - 340px);
+    background: repeating-conic-gradient(from 20deg, #e5053913 0deg 9deg, transparent 9deg 22.5deg);
+    animation: aviator-world-turn 36s linear infinite;
+}
+.aviator-runway {
+    position: absolute; bottom: 7px; left: 14%; width: 72%; height: 65px;
+    border-inline: 1px solid #f3295270;
+    background: repeating-linear-gradient(0deg, transparent 0 15px, #f3295240 15px 17px), linear-gradient(90deg, transparent 49.5%, #ffd0db66 49.5% 50.5%, transparent 50.5%);
+    transform: perspective(120px) rotateX(57deg); transform-origin: bottom;
+    box-shadow: -6px 0 10px -8px #f32952, 6px 0 10px -8px #f32952;
+}
+.aviator-streaks { position: absolute; inset: 0; }
+.aviator-streaks i { position: absolute; left: 75%; top: 19%; width: 48px; height: 1px; background: linear-gradient(90deg, transparent, #fba2b5); opacity: 0; transform: rotate(-18deg); animation: aviator-world-streak 2s ease-out infinite; }
+.aviator-streaks i:nth-child(2) { top: 48%; left: 25%; animation-delay: .6s; width: 30px; }
+.aviator-streaks i:nth-child(3) { top: 71%; left: 90%; animation-delay: 1.2s; }
+.telemetry { color: #c092a1; }
+.telemetry b { color: #f0bfcc; }
+.micro-label { color: #a26d7e; }
+.telemetry-bars i { background: #f3295260; }
+.signal-blocks i { box-shadow: 0 0 8px #f3295255; }
+.lock-aura { background: #e5053915; box-shadow: 0 0 65px 22px #e5053910; }
+.scope-boundary { stroke: #ff52732c; }
+.ring { stroke: #f3295270; }
+.ring-outer rect { filter: drop-shadow(0 0 5px #f32952); }
+.ring-highlight { stroke: #ff7b97; filter: drop-shadow(0 0 3px #f3295260); }
+.ring-ticks { stroke: #f76b8a70; }
+.scope-center { stroke: #e5053959; }
+.scope-fine { stroke: #f329522b; }
+.scope-progress { stroke: #ffb3c4; }
+.scope-crosses { stroke: #f3295280; }
+.scope-line { background: linear-gradient(90deg, #f3295220, #f3295277); }
+.scope-line::after { background: #ffa2b8; box-shadow: 0 0 8px #f32952; }
+.scope-coordinate { color: #cc96a5; }
+.coordinate-bottom { color: #ff8ea8; }
+.flight-horizon { fill: none; stroke: #ffb3c41a; stroke-width: 1; stroke-dasharray: 3 5; }
+.eyebrow { color: #c59da9; }
+.eyebrow span { background: #f3295270; }
+.glitch-title {
+    color: #f32952; font-style: italic; letter-spacing: -3px;
+    padding-right: .1em;
+    text-shadow: 0 2px 0 #750a25, 0 0 36px #e5053930;
+}
+.glitch-title::after { display: none; }
+.hero-subtitle { color: #b08b98; }
+.hero-subtitle span { color: #eee0e5; }
+.access-strip { border-color: #a54159; background: linear-gradient(90deg, #4b172750, #17121b70); }
+.access-indicator svg { stroke: #ff6a8a; }
+.access-indicator svg circle:nth-child(3) { fill: #ff6a8a; }
+.node-status { border-color: #8d3a5355; }
+.node-status > span { color: #e0bbc7; }
+.node-status strong { color: #bc91a0; }
+.session-clock { color: #fce6ed; background: linear-gradient(#98586b, #98586b) left top/6px 1px no-repeat, linear-gradient(#98586b, #98586b) left top/1px 6px no-repeat, linear-gradient(#98586b, #98586b) right bottom/6px 1px no-repeat, linear-gradient(#98586b, #98586b) right bottom/1px 6px no-repeat; }
+.console { border-color: #99455b; background: linear-gradient(135deg, #3b182655, #111016e6 65%); box-shadow: 0 0 20px #e505390b, inset 0 0 25px #e5053904; }
+.console::before { border-color: #ff8aa5; filter: drop-shadow(0 0 5px #e50539); }
+.panel-heading h2 { color: #d9a1b2; }
+.heading-rule { background: linear-gradient(90deg, #82394c, #82394c22); }
+.console-dots i { background: #ff7898; box-shadow: 0 0 5px #f3295255; }
+.console-lines li { color: #e0cbd3; }
+.console-lines li > svg { color: #f77a98; }
+.console-lines em { color: #ffc0d0; }
+.line-tail { color: #af7b8b; }
+.line-check { color: #ff9fb7; }
+.console-final em { color: #fff0f4; }
+.terminal-cursor { background: #ffb1c6; }
+.console-caption { color: #a16e7e; }
+.progress-heading h2 { color: #e5b3c3; }
+.progress-value { color: #fff1f5; text-shadow: 0 0 15px #f3295240; }
+.progress-track { border-color: #c54c6a; background: #1e1019; box-shadow: 0 0 0 3px #f329520d, inset 0 0 12px #000; }
+.progress-fill { background: linear-gradient(90deg, #9b102e, #ed1645 55%, #ffabc0); box-shadow: 0 0 12px #e5053977; }
+.progress-segments { background: repeating-linear-gradient(90deg, transparent 0 20px, #190c16a8 20px 23px); }
+.progress-footnote { color: #bd91a0; }
+.transfer-label { color: #e1a8ba; }
+.transfer-label > span { color: #ff9bb4; }
+.status-tile { border-color: #60303f; background: linear-gradient(135deg, #3416247a, #16101799); }
+.status-tile > svg { color: #c47890; }
+.status-tile h2 { color: #e3b7c5; }
+.status-tile p { color: #ad7c8d; }
+.tile-index { color: #a06e7e; }
+.status-tile.is-complete > svg { color: #ff7d9d; }
+.status-tile.is-complete p { color: #d5a2b3; }
+.status-tile.is-active { border-color: #ff8ca9; background: radial-gradient(ellipse at top, #e505392b, #32132166 70%); box-shadow: inset 0 0 22px #e5053924; }
+.status-tile.is-active::after { background: #ffc3d2; box-shadow: 0 0 15px 3px #e50539; }
+.status-tile.is-active > svg { color: #ffb3c7; filter: drop-shadow(0 0 7px #e5053955); }
+.status-tile.is-active h2 { color: #fff0f5; }
+.portal-footer { border-color: #633040; }
+.portal-footer p { color: #bc8e9e; }
+.portal-footer strong { color: #f2bfce; }
+.footer-cross { color: #ff7496; }
+.footer-divider, .footer-id { color: #a27182; }
+.disclosure { color: #b698a4; }
+.preview-notice, .redirect-fallback { color: #d4a1b3; }
+.preview-notice > span { color: #f32952; }
+html[data-stage="complete"] .lock-aura { background: #e505391c; box-shadow: 0 0 80px 25px #e5053920; }
+html[data-stage="unlocked"] .progress-track { box-shadow: 0 0 15px #e5053926, inset 0 0 12px #000; }
+
+@keyframes aviator-world-turn { to { transform: rotate(360deg); } }
+@keyframes aviator-world-streak {
+    0% { opacity: 0; transform: translate(30px, -10px) rotate(-18deg); }
+    25% { opacity: .5; }
+    85%, 100% { opacity: 0; transform: translate(-130px, 40px) rotate(-18deg); }
+}
+.reference-nav {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.reference-studio {
+    font-size: 10px;
+    white-space: nowrap;
+    text-decoration: none;
+    border-bottom: 1px solid #f3295240;
+    padding-block: 6px;
+}
+
+.reference-studio:hover {
+    color: var(--bright);
+    border-color: currentColor;
+}
+
+.portal-flight-inset {
+    overflow: hidden;
+    pointer-events: none;
+}
+
+.portal-flight-curve {
+    fill: none;
+    stroke: #e50539;
+    stroke-width: 4;
+    stroke-linecap: round;
+}
+
+.aviator-accent {
+    color: #f44566;
+    font-weight: inherit;
+}
+
+@media (max-width: 600px) {
+    .reference-nav {
+        flex-direction: column;
+        align-items: flex-end;
+        gap: 5px;
+    }
+
+    .reference-studio {
+        font-size: 9px;
+        padding-block: 0 3px;
+    }
+}

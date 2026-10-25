@@ -1,74 +1,106 @@
 <!doctype html>
 <html lang="en" data-stage="locked">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="theme-color" content="#111217">
-  <meta name="description" content="Enter the Aviator flight deck with DM FIRST. Continue to registration and explore the flight preview.">
-  <title>Aviator × DM FIRST — Ready for takeoff</title>
-  <link rel="canonical" href="https://aviator.kalam.trade/">
-  <link rel="icon" type="image/svg+xml" href="./assets/plane/plane-0.svg">
-  <link rel="stylesheet" href="./css/styles.css">
-  <link rel="stylesheet" href="./css/aviator-theme.css">
-  <link rel="preload" as="image" href="./assets/plane/plane-0.svg">
-  <script type="module" src="./js/main.js"></script>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#05070b">
+    <meta name="description" content="Enter the Aviator world with DM FIRST. Your flight starts here.">
+    <title>Aviator × DM FIRST — Access Terminal</title>
+    <link rel="canonical" href="https://aviator.kalam.trade/">
+    <link rel="icon" type="image/svg+xml" href="./assets/plane/plane-0.svg">
+    <link rel="stylesheet" href="./css/aviator-terminal.css">
+    <link rel="preload" as="image" href="./assets/plane/plane-0.svg">
+    <link rel="preload" as="image" href="./assets/plane/plane-1.svg">
+    <link rel="preload" as="image" href="./assets/plane/plane-2.svg">
+    <link rel="preload" as="image" href="./assets/plane/plane-3.svg">
+    <script type="module" src="./js/main.js"></script>
 </head>
-<body class="aviatorLanding">
-  <main class="flightPortal" aria-labelledby="portal-title">
-    <header class="flightPortalHeader">
-      <a class="flightWordmark" href="./" aria-label="Aviator with DM FIRST"><img src="./assets/plane/plane-0.svg" alt="" width="150" height="74"><span>Aviator<small>POWERED BY <b>DM FIRST</b></small></span></a>
-      <a class="flightStudioLink" href="./creator-studio.html" data-creator-link>Creator Studio <span aria-hidden="true">↗</span></a>
+<body>
+<div class="terminal-atmosphere" aria-hidden="true"><div class="world-grid"></div><div class="code-columns"><span>AV_UI.01<br>01001101<br>FLIGHT.SVG<br>00110110<br>DMF.INIT<br>11001001<br>AV_UI.01<br>01001101<br>FLIGHT.SVG<br>00110110</span><span>00110110<br>AV.CANVAS<br>11000101<br>VIEW.INIT<br>01011001<br>DMF.ROUTE<br>00110110<br>AV.CANVAS<br>11000101<br>VIEW.INIT</span></div></div>
+<main class="portal" aria-labelledby="portal-title">
+    <div class="terminal-corners" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
+    <div class="terminal-scan" aria-hidden="true"></div>
+    <header class="portal-header">
+        <a class="wordmark" href="./" aria-label="Aviator with DM FIRST">
+            <img src="./assets/plane/plane-0.svg" alt="" width="150" height="74">
+            <span>Aviator<small><b>DM FIRST</b> // ACCESS INTERFACE</small></span>
+        </a>
+        <a class="studio-link" href="./creator-studio.html" data-creator-link>Creator Studio <span aria-hidden="true">↗</span></a>
     </header>
-    <div class="flightPortalBody">
-      <section class="flightHero" aria-label="Aviator takeoff sequence">
-        <div class="flightEyebrow"><i></i> THE AVIATOR EXPERIENCE</div>
-        <h1 id="portal-title">Ready for<br><em>takeoff.</em></h1>
-        <p class="flightLead">Your next flight starts here.</p>
-        <div class="takeoffScene" aria-hidden="true">
-          <div class="takeoffRays"></div>
-          <span class="takeoffCoordinate">FLIGHT DECK / 01</span>
-          <svg viewBox="0 0 600 300" class="takeoffVisual">
-            <defs><linearGradient id="takeoffFill" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#e50539" stop-opacity=".28"/><stop offset="1" stop-color="#e50539" stop-opacity="0"/></linearGradient></defs>
-            <path class="takeoffBaseline" d="M24 264H578M24 24V264"/>
-            <path class="takeoffTicks" d="M94 264v5m70-5v5m70-5v5m70-5v5m70-5v5m70-5v5m70-5v5"/>
-            <path id="takeoffArea" fill="url(#takeoffFill)" d="M24 264Z"/>
-            <path id="takeoffCurve" class="takeoffCurve" d="M24 264Q24 264 24 264"/>
-            <image id="takeoffPlane" href="./assets/plane/plane-0.svg" x="3" y="197.4" width="150" height="74"/>
-          </svg>
-          <div class="takeoffReadout"><i></i><span data-lock-caption>PREPARING FLIGHT</span><span class="takeoffReadoutEnd">AVIATOR × DM FIRST</span></div>
-        </div>
-        <div class="flightPartner"><span>YOUR REGISTRATION PARTNER</span><strong>DM FIRST <i>↗</i></strong></div>
-      </section>
-      <section class="flightPreparation" aria-labelledby="progress-label">
-        <div class="flightBoardingLabel"><span>WELCOME ABOARD</span><span class="flightDeckBadge">FLIGHT 01</span></div>
-        <div class="flightProgressHeading"><h2 id="progress-label" data-progress-label>Preparing your flight</h2><strong><span data-progress-value>0</span><small>%</small></strong></div>
-        <div class="flightProgress" role="progressbar" aria-labelledby="progress-label" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><span></span></div>
-        <p class="flightProgressNote" data-redirect-status>Registration opens automatically when ready.</p>
-        <div class="flightChecklistHeading"><span>PRE-FLIGHT CHECK</span><span data-session-status>PREPARING</span></div>
-        <ol class="flightChecklist">
-          <li data-console-step="0"><span class="flightStepNumber">01</span><span>Preparing the flight deck</span><i aria-hidden="true">✓</i></li>
-          <li data-console-step="1"><span class="flightStepNumber">02</span><span>Loading Aviator visuals</span><i aria-hidden="true">✓</i></li>
-          <li data-console-step="2"><span class="flightStepNumber">03</span><span>Attaching your DM FIRST referral</span><i aria-hidden="true">✓</i></li>
-          <li data-console-step="3"><span class="flightStepNumber">04</span><span>Preparing registration</span><i aria-hidden="true">✓</i></li>
-          <li data-console-step="4"><span class="flightStepNumber">05</span><span>Finishing the access sequence</span><i aria-hidden="true">✓</i></li>
-          <li data-console-step="5"><span class="flightStepNumber">06</span><span>Ready for takeoff</span><i aria-hidden="true">✓</i></li>
-        </ol>
-        <div class="flightDeparture"><div><small>DESTINATION</small><strong data-node-status>DM FIRST REGISTRATION</strong></div><span data-access-status>PREPARING</span></div>
-      </section>
+
+    <div class="departure-layout">
+        <section class="hero" aria-labelledby="portal-title">
+            <div class="hero-copy">
+                <p class="eyebrow"><i aria-hidden="true"></i> DM FIRST // AVIATOR INTERFACE</p>
+                <h1 id="portal-title" data-text="AVIATOR">AVIATOR</h1>
+                <p class="hero-description"><span>ACCESS TERMINAL</span> <b>_</b><br>Initializing your flight. Stand by.</p>
+            </div>
+            <div class="flight-scene" aria-hidden="true">
+                <div class="flight-rays"></div>
+                <span class="scene-word">AV / 001</span>
+                <img class="terminal-operator" src="./assets/images/hooded-figure.svg" alt="" width="560" height="430">
+                <div class="scene-reticle"><i></i><i></i><span>FLIGHT VISUALIZER</span></div>
+                <div class="scene-data"><span>RENDER : SVG</span><span>ASSET : AVIATOR</span><span data-diagnostic>0x0000 // INIT</span></div>
+                <div class="flight-wind"><i></i><i></i><i></i></div>
+                <svg class="portal-flight-inset" viewBox="0 -55 680 400" preserveAspectRatio="xMidYMid meet">
+                    <defs>
+                        <linearGradient id="takeoffFill" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#ed2446" stop-opacity=".36"/><stop offset="1" stop-color="#ed2446" stop-opacity="0"/></linearGradient>
+                        <linearGradient id="trailStroke"><stop stop-color="#ed2446" stop-opacity=".15"/><stop offset="1" stop-color="#ff5367"/></linearGradient>
+                    </defs>
+                    <path class="scene-guide" d="M24 264H650M24 264V-15"/>
+                    <path class="scene-ticks" d="M114 264v6m90-6v6m90-6v6m90-6v6m90-6v6m90-6v6"/>
+                    <path id="takeoffArea" fill="url(#takeoffFill)" d="M24 264Z"/>
+                    <path id="takeoffCurve" class="flight-curve" d="M24 264Q24 264 24 264"/>
+                    <image id="takeoffPlane" href="./assets/plane/plane-0.svg" x="-12.4" y="148.56" width="260" height="128.27"/>
+                </svg>
+                <div class="scene-caption"><span><i></i> <b data-lock-caption>PRE-FLIGHT CHECK</b></span><span>AVIATOR / 01</span></div>
+            </div>
+            <div class="hero-route"><span class="route-origin">DMF://AVIATOR</span><span class="route-line" aria-hidden="true"><i></i><svg viewBox="0 0 24 24"><use href="./assets/images/aviator-icons.svg#plane"/></svg></span><span>REGISTRATION ROUTE</span></div>
+        </section>
+
+        <aside class="access-terminal" aria-label="Registration preparation">
+            <div class="terminal-heading"><span><i></i><i></i><i></i></span><span>AVIATOR_ACCESS.EXE</span><span>01</span></div>
+            <div class="terminal-intro"><p>// INTERFACE INITIALIZATION</p><h2><span data-terminal-title>Preparing access</span><b class="terminal-cursor">_</b></h2><span class="connection-status"><i></i> DM FIRST REFERRAL ATTACHED</span></div>
+
+            <section class="progress-section" aria-labelledby="progress-label">
+                <div class="progress-heading"><h3 id="progress-label" data-progress-label>PREPARING YOUR FLIGHT</h3><strong class="progress-value"><span data-progress-value>0</span><small>%</small></strong></div>
+                <div class="progress-track" role="progressbar" aria-labelledby="progress-label" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><div class="progress-fill"><span class="progress-shine"></span></div><div class="progress-segments" aria-hidden="true"></div></div>
+                <p class="progress-footnote" data-redirect-status>Registration opens automatically when ready.</p>
+            </section>
+
+            <section class="access-strip" aria-label="Current connection status">
+                <div><span class="terminal-label">DESTINATION</span><strong data-node-status>REGISTRATION ROUTE</strong></div>
+                <div class="access-indicator"><span class="terminal-label">ACCESS</span><strong data-access-status>PREPARING</strong></div>
+                <div><span class="terminal-label">LOCAL TIME</span><time data-clock aria-label="Local time">00:00:00</time></div>
+            </section>
+
+            <section class="console" aria-labelledby="console-title">
+                <div class="panel-heading"><h3 id="console-title">SYSTEM CONSOLE</h3><span data-session-status>PREPARING</span></div>
+                <ol class="console-lines">
+                    <li data-console-step="0"><span class="step-check" aria-hidden="true">01</span><span data-console-copy data-line="Initialize Aviator interface">Initialize Aviator interface</span><span class="line-check" aria-hidden="true">✓</span></li>
+                    <li data-console-step="1"><span class="step-check" aria-hidden="true">02</span><span data-console-copy data-line="Load flight visuals">Load flight visuals</span><span class="line-check" aria-hidden="true">✓</span></li>
+                    <li data-console-step="2"><span class="step-check" aria-hidden="true">03</span><span data-console-copy data-line="Attach DM FIRST referral">Attach DM FIRST referral</span><span class="line-check" aria-hidden="true">✓</span></li>
+                    <li data-console-step="3"><span class="step-check" aria-hidden="true">04</span><span data-console-copy data-line="Prepare registration route">Prepare registration route</span><span class="line-check" aria-hidden="true">✓</span></li>
+                    <li data-console-step="4"><span class="step-check" aria-hidden="true">05</span><span data-console-copy data-line="Complete interface checks">Complete interface checks</span><span class="line-check" aria-hidden="true">✓</span></li>
+                    <li data-console-step="5"><span class="step-check" aria-hidden="true">06</span><span data-console-copy data-line="Access ready. Opening portal.">Access ready. Opening portal.</span><span class="line-check" aria-hidden="true">✓</span></li>
+                </ol>
+            </section>
+            <div class="terminal-readout"><div><span class="terminal-label">FLIGHT STATUS</span><strong id="launchClearance">PRE-FLIGHT</strong></div><div class="signal-meter" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div></div>
+        </aside>
     </div>
-    <section class="flightStatusGrid" aria-label="Flight preparation status">
-      <div data-status-tile="0"><span>01 / VISUALS</span><strong data-tile-label>LOADING</strong></div>
-      <div data-status-tile="1"><span>02 / REFERRAL</span><strong data-tile-label>STANDBY</strong></div>
-      <div data-status-tile="2"><span>03 / ROUTE</span><strong data-tile-label>STANDBY</strong></div>
-      <div data-status-tile="3"><span>04 / DEPARTURE</span><strong data-tile-label>LOCKED</strong></div>
+
+    <section class="status-grid" aria-label="Flight preparation status">
+        <div class="status-tile" data-status-tile="0"><span class="status-icon"><svg aria-hidden="true"><use href="./assets/images/aviator-icons.svg#plane"/></svg></span><div><h2>Flight deck</h2><p data-tile-label>LOADING</p></div><span class="tile-index" aria-hidden="true">01</span></div>
+        <div class="status-tile" data-status-tile="1"><span class="status-icon"><svg aria-hidden="true"><use href="./assets/images/aviator-icons.svg#pass"/></svg></span><div><h2>Your referral</h2><p data-tile-label>STANDBY</p></div><span class="tile-index" aria-hidden="true">02</span></div>
+        <div class="status-tile" data-status-tile="2"><span class="status-icon"><svg aria-hidden="true"><use href="./assets/images/aviator-icons.svg#route"/></svg></span><div><h2>Flight path</h2><p data-tile-label>STANDBY</p></div><span class="tile-index" aria-hidden="true">03</span></div>
+        <div class="status-tile" data-status-tile="3"><span class="status-icon"><svg aria-hidden="true"><use href="./assets/images/icons.svg#shield-check"/></svg></span><div><h2>Boarding</h2><p data-tile-label>LOCKED</p></div><span class="tile-index" aria-hidden="true">04</span></div>
     </section>
-    <footer class="flightPortalFooter"><span>© <span data-year>2026</span> DM FIRST × AVIATOR</span><time data-clock aria-label="Local time">00:00:00</time><span>18+ · PLAY RESPONSIBLY</span></footer>
-    <p class="flightDisclosure">Continue to DM FIRST registration through an affiliate referral.</p>
-    <p class="flightPreviewNotice" id="preview-notice" hidden>Preview mode · Automatic navigation paused</p>
-    <p class="flightContinue" id="wrapper-preview-link" hidden><a data-wrapper-link href="./registration.html">Enter the Aviator site <span aria-hidden="true">→</span></a></p>
-    <p class="flightContinue" id="redirect-fallback" hidden><a data-wrapper-link href="./registration.html">Continue to registration →</a></p>
-    <noscript><p class="flightContinue"><a href="./registration.html">Continue to registration →</a></p></noscript>
-    <p class="sr-only" role="status" id="sequence-announcement">Preparing your Aviator access with DM FIRST.</p>
-  </main>
+    <footer class="portal-footer"><p>© <span data-year>2026</span> <strong>DM FIRST</strong> <span>×</span> AVIATOR</p><p class="disclosure">Affiliate registration <span>·</span> 18+ · Play responsibly.</p></footer>
+    <p class="preview-notice" id="preview-notice" hidden>PREVIEW MODE · Automatic navigation paused</p>
+    <p class="redirect-fallback" id="wrapper-preview-link" hidden><a data-wrapper-link href="./registration.html">Open registration preview ↗</a></p>
+    <p class="redirect-fallback" id="redirect-fallback" hidden><a data-wrapper-link href="./registration.html">Continue to registration ↗</a></p>
+    <noscript><p class="redirect-fallback">JavaScript is required for the animated transition. <a href="./registration.html">Continue to registration ↗</a></p></noscript>
+    <p class="sr-only" role="status" id="sequence-announcement">Preparing your DmFirst registration referral.</p>
+</main>
 </body>
 </html>

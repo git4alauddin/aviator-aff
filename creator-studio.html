@@ -117,6 +117,11 @@
       <div class="predictGame"><span>FLIGHT PREVIEW</span><h2 id="predictGameName" tabindex="-1">Aviator</h2></div>
       <div class="predictRound"><span id="predictRoundLabel">Round 1</span><span id="predictRoundPhase">Upcoming</span></div>
       <div class="predictResult" id="predictResult" aria-busy="false">
+        <div class="predictScan" aria-hidden="true">
+          <div class="predictScanBeam"></div>
+          <svg class="predictScanFlight" viewBox="0 0 350 160" preserveAspectRatio="xMidYMid meet"><path data-scan-trail d="M12 144Q12 144 12 144"/><image data-scan-plane href="assets/plane/plane-0.svg" x="3.88" y="118.26" width="58" height="28.6"/></svg>
+          <span class="predictScanCaption">SCANNING PREVIEW</span>
+        </div>
         <svg class="predictTelemetry" viewBox="0 0 350 160" preserveAspectRatio="none" aria-hidden="true"><path class="predictTelemetryGrid" d="M0 40h350M0 80h350M0 120h350M70 0v160M140 0v160M210 0v160M280 0v160"/><path class="predictTelemetryCurve" d="M8 148Q178 148 326 24"/><circle cx="326" cy="24" r="3"/></svg>
         <span data-predict-text="resultLabel">Preset crash multiplier</span>
         <div class="predictValue" id="predictValue">—<small>x</small></div>

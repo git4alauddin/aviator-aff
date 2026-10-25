@@ -4,6 +4,7 @@ import {playAccessSequence} from "./animations.js";
 const root = document.documentElement;
 document.querySelector('link[rel="canonical"]').href = new URL('/', config.siteUrl).href;
 const preview = new URLSearchParams(window.location.search).get("preview") === "1";
+root.dataset.preview = String(preview);
 const progressBar = document.querySelector('[role="progressbar"]');
 const percent = document.querySelector("[data-progress-value]");
 const progressLabel = document.querySelector("[data-progress-label]");
@@ -41,6 +42,9 @@ updateClock();
 const clockTimer = window.setInterval(updateClock, 1000);
 
 function render({progress, stage}) {
+    const plane = document.getElementById('takeoffPlane');
+    const frame = motionPreference.matches ? 0 : Math.floor(performance.now() * 7.5 / 1000) % 4;
+    plane.setAttribute('href', `./assets/plane/plane-${frame}.svg`);
     if (progress !== lastProgress) {
         root.style.setProperty("--progress", `${progress}%`);
         root.style.setProperty("--progress-number", String(progress));
@@ -52,13 +56,20 @@ function render({progress, stage}) {
         const arc = `M24 264Q${24 + 226 * t} 264 ${x} ${y}`;
         document.getElementById('takeoffCurve').setAttribute('d', arc);
         document.getElementById('takeoffArea').setAttribute('d', `${arc}L${x} 264Z`);
-        document.getElementById('takeoffPlane').setAttribute('x', x - 21);
-        document.getElementById('takeoffPlane').setAttribute('y', y - 66.6);
+        plane.setAttribute('x', x - Number(plane.getAttribute('width')) * .14);
+        plane.setAttribute('y', y - Number(plane.getAttribute('height')) * .9);
+        document.getElementById('launchClearance').textContent = progress < 35 ? 'PRE-FLIGHT' : progress < 77 ? 'ON THE RUNWAY' : progress < 100 ? 'FINAL CHECK' : 'CLEARED';
         const currentStep = stepThresholds.findLastIndex((threshold) => progress >= threshold);
+        document.querySelector('[data-diagnostic]').textContent = `0x${(progress * 631).toString(16).padStart(4, '0').toUpperCase()} // AV.UI`;
         steps.forEach((step, index) => {
             step.classList.toggle("is-visible", index <= currentStep);
             step.classList.toggle("is-current", index === currentStep);
             step.classList.toggle("is-done", index < currentStep || progress === 100);
+            const copy = step.querySelector('[data-console-copy]');
+            const line = copy.dataset.line;
+            const span = (stepThresholds[index + 1] ?? 101) - stepThresholds[index];
+            const reveal = motionPreference.matches || index !== currentStep || progress === 100 ? 1 : Math.min(1, (progress - stepThresholds[index] + 3) / span);
+            copy.textContent = line.slice(0, Math.ceil(line.length * reveal));
         });
         const pendingTile = tileThresholds.findIndex((threshold) => progress < threshold);
         const activeTile = pendingTile === -1 ? tiles.length - 1 : pendingTile;
@@ -66,7 +77,7 @@ function render({progress, stage}) {
             const complete = progress >= tileThresholds[index];
             tile.classList.toggle("is-complete", complete);
             tile.classList.toggle("is-active", index === activeTile);
-            const label = index === 3 ? "BOARDING" : complete ? tileCompleteLabels[index] : index === 0 ? "LOADING" : "STANDBY";
+            const label = complete ? tileCompleteLabels[index] : index === 3 ? "LOCKED" : index === 0 ? "LOADING" : "STANDBY";
             tile.querySelector("[data-tile-label]").textContent = label;
         });
         lastProgress = progress;
@@ -76,10 +87,11 @@ function render({progress, stage}) {
         const complete = stage !== "locked";
         const opening = stage === "unlocking" || stage === "unlocked";
         document.querySelector("[data-session-status]").textContent = complete ? "READY" : "PREPARING";
-        document.querySelector("[data-lock-caption]").textContent = opening ? "READY FOR TAKEOFF" : complete ? "FLIGHT READY" : "PREPARING FLIGHT";
+        document.querySelector("[data-lock-caption]").textContent = opening ? "READY TO BOARD" : complete ? "FLIGHT READY" : "PRE-FLIGHT CHECK";
         document.querySelector("[data-access-status]").textContent = opening ? "OPEN" : complete ? "READY" : "PREPARING";
+        document.querySelector('[data-terminal-title]').textContent = opening ? 'Access ready' : complete ? 'Checks complete' : 'Preparing access';
         document.querySelector("[data-node-status]").textContent = opening ? "REGISTRATION LINK READY" : "REGISTRATION ROUTE";
-        progressLabel.textContent = opening ? "Ready for takeoff" : complete ? "Flight prepared" : "Preparing your flight";
+        progressLabel.textContent = opening ? "READY FOR TAKEOFF" : complete ? "FLIGHT DECK READY" : "PREPARING YOUR FLIGHT";
         if (opening) {
             tiles[3].querySelector("[data-tile-label]").textContent = "OPEN";
             redirectStatus.textContent = preview ? "Preview complete — automatic navigation paused" : "Opening DmFirst registration…";

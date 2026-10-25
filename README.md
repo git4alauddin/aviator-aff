@@ -4,11 +4,20 @@ DM FIRST portal adapted for `aviator.kalam.trade`: landing animation, registrati
 and wallet wrapper, deposit details, draggable widgets, configurable voice, and
 an Aviator preset preview. Creator Studio opens the existing flight simulation.
 
-The visitor experience uses Aviator red, dark flight-deck surfaces, original plane
-art, and a takeoff curve that advances with loading progress. The header, wallet
-popup, floating controls, prediction panel, and Creator Studio entry share this
-theme. DM FIRST remains the registration/wallet partner; the embedded site keeps
-its own interface. Theme overrides are in `css/aviator-theme.css`.
+The loading page uses the Aviator terminal theme in `css/aviator-terminal.css`:
+dark panels, red flight visuals, mint console text, a segmented glowing loader,
+typed initialization lines, scanning sweeps, title glitches, moving code columns,
+and a hooded silhouette behind the flight display. The progress bar, connection
+details, clock, preparation checklist, flight status, four status cards, Creator
+Studio navigation, preview mode, and DM FIRST partnership remain available.
+These are visual interface effects; the page prepares the configured referral.
+Loading still redirects directly to registration with the same timing. Preview
+mode holds the completed portal; reduced motion keeps the plane static.
+
+The registration wrapper, wallet popup, floating controls, prediction panel, and
+Creator Studio entry retain the red Aviator theme in `css/aviator-theme.css`.
+DM FIRST remains the registration/wallet partner; the embedded site keeps its
+own interface.
 
 ## Preview
 
@@ -34,6 +43,10 @@ contains only Creator Studio. Reopening details through the floating widget afte
 shows a Copy Code button simulation. It animates loading and completion feedback
 without reading or writing the clipboard or displaying the access password.
 A Claim click does not verify a deposit or registration.
+
+The prediction reveal uses a scanning sweep and a subtle plane/trail behind the
+multiplier. Both follow the same 720ms reveal clock and stop on completion, close,
+or a round change. Reduced motion skips these effects and reveals immediately.
 
 PREDICT asks for the configured code, then previews local
 Aviator presets. Visitor results cycle through presets and never read the external

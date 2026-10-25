@@ -14,10 +14,10 @@ test("the lock stays closed and redirection is disabled while the bar fills", ()
     assert.equal(almostDone.stage, "locked");
     assert.equal(almostDone.redirectReady, false);
 });
-test("100% is visibly held before the lock starts opening", () => {
+test("100% is briefly held before redirecting directly", () => {
     assert.deepEqual(getSequenceState(timing.fillMs, timing), {progress: 100, stage: "complete", redirectReady: false});
     assert.equal(getSequenceState(unlockStart - 1, timing).stage, "complete");
-    assert.deepEqual(getSequenceState(unlockStart, timing), {progress: 100, stage: "unlocking", redirectReady: false});
+    assert.deepEqual(getSequenceState(unlockStart, timing), {progress: 100, stage: "unlocked", redirectReady: true});
 });
 test("redirection waits until the entire lock-opening interval finishes", () => {
     assert.equal(getSequenceState(redirectAt - 1, timing).redirectReady, false);
@@ -37,4 +37,3 @@ test("the registration destination preserves the exact referral invitation", () 
     assert.equal(destination.origin, "https://www.dmfirst0.com");
     assert.equal(destination.hash, "#/register?invitationCode=93458117528");
 });
-
