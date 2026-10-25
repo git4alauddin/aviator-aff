@@ -1,0 +1,6 @@
+{
+  "name": "aviator-kalam-trade",
+  "compatibility_date": "2026-10-25",
+  "build": {"command": "npm run build"},
+  "assets": {"directory": "./dist"}
+}

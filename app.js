@@ -233,7 +233,7 @@
       phase: next ? 'waiting' : phase,
       target: cfg.crashPoints[(sequence + Number(next)) % cfg.crashPoints.length],
     };
-  });
+  }, { requireCode: false });
   function tick(now) { if (!paused) render(now); requestAnimationFrame(tick); }
   requestAnimationFrame(tick);
 })();

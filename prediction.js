@@ -3,7 +3,7 @@
  */
 (() => {
   'use strict';
-  window.mountAviatorPrediction = (settings, getRound) => {
+  window.mountAviatorPrediction = (settings, getRound, { onPredict, requireCode = true } = {}) => {
     const $ = id => document.getElementById(id);
     const launcher = $('predictLauncher'), dialog = $('predictionDialog');
     if (settings?.enabled !== true) return;
@@ -124,6 +124,10 @@
         $('predictCode').focus();
         return;
       }
+      showPreview();
+    }
+
+    function showPreview() {
       state = 'ready';
       dialog.dataset.accessState = 'ready';
       dialog.setAttribute('aria-labelledby', 'predictGameName');
@@ -162,11 +166,12 @@
     }
 
     launcher.addEventListener('click', () => {
-      if (dialog.open) return;
+      if (dialog.open || document.querySelector('dialog[open]')) return;
       reset();
       dialog.showModal();
       launcher.setAttribute('aria-expanded', 'true');
-      $('predictCode').focus();
+      if (requireCode) $('predictCode').focus();
+      else showPreview();
       const run = watchId;
       requestAnimationFrame(time => watch(time, run));
     });
@@ -196,6 +201,7 @@
     });
     $('predictRun').addEventListener('click', () => {
       if (!dialog.open || state !== 'ready') return;
+      onPredict?.();
       syncRound();
       if ($('predictRun').disabled) return;
       selected = { ...round };

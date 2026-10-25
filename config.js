@@ -1,4 +1,4 @@
-window.SIM_CONFIG = {
+globalThis.SIM_CONFIG = {
   crashPoints: [1.24, 2.56, 5.80, 1.08, 3.42, 8.17, 1.61, 2.09],
   countdownSeconds: 4,
   postCrashSeconds: 2.5,
@@ -23,7 +23,7 @@ window.SIM_CONFIG = {
   // Selected public settings adapted from dmfirst-affiliation/js/prediction-config.js.
   prediction: {
     enabled: true,
-    accessCode: 'DMFIRST',      // Public browser-side gate, not secure authentication.
+    accessCode: 'avfirst',      // Public browser-side gate, not secure authentication.
     brand: 'DM FIRST',
     gameName: 'Aviator',
     unlockDurationMs: 1800,

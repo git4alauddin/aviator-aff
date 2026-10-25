@@ -23,6 +23,7 @@ const delay = ms => new Promise(resolve => setTimeout(resolve, ms));
   let diagnostics = '';
   browser.stderr.on('data', chunk => { diagnostics += chunk; });
   let socket;
+  let site;
   try {
     const portFile = path.join(profile, 'DevToolsActivePort');
     for (let i = 0; i < 100 && !fs.existsSync(portFile); i++) await delay(100);
@@ -62,7 +63,7 @@ const delay = ms => new Promise(resolve => setTimeout(resolve, ms));
       window.__advance = time => { window.__time = time; for (const [id,timer] of window.__timers) { if(timer.at <= time) { window.__timers.delete(id); timer.callback(); } } const frames = window.__frames.splice(0); frames.forEach(callback => callback(time)); };
     ` });
     const open = async () => {
-      await send('Page.navigate', { url: pathToFileURL(path.join(__dirname, 'index.html')).href });
+      await send('Page.navigate', { url: pathToFileURL(path.join(__dirname, 'creator-studio.html')).href });
       for (let i = 0; i < 100; i++) {
         if (await evaluate("!!document.getElementById('action0') && !!window.__advance")) break;
         await delay(50);
@@ -75,7 +76,7 @@ const delay = ms => new Promise(resolve => setTimeout(resolve, ms));
     const change = (selector, value) => evaluate(`(() => { const el = document.querySelector(${JSON.stringify(selector)}); el.value = ${JSON.stringify(value)}; el.dispatchEvent(new Event('change', { bubbles: true })); })()`);
     const wallet = () => evaluate("Number(document.getElementById('wallet').textContent.replaceAll(',', ''))");
     const screenshot = async name => {
-      await evaluate('document.getAnimations().forEach(animation => animation.finish())');
+      await evaluate('document.getAnimations().forEach(animation => { if (Number.isFinite(animation.effect.getComputedTiming().endTime)) animation.finish(); else animation.pause(); })');
       const image = await send('Page.captureScreenshot', { format: 'png', captureBeyondViewport: false });
       fs.mkdirSync(path.join(__dirname, 'preview'), { recursive: true });
       fs.writeFileSync(path.join(__dirname, 'preview', name), Buffer.from(image.data, 'base64'));
@@ -93,6 +94,91 @@ const delay = ms => new Promise(resolve => setTimeout(resolve, ms));
       await send('Browser.close');
       return;
     }
+    const {startServer} = await import('./tools/serve.mjs');
+    site = await startServer(0);
+    const siteUrl = `http://127.0.0.1:${site.address().port}`;
+    await send('Network.enable');
+    await send('Network.setBlockedURLs', {urls:['*dmfirst0.com*']});
+    const openSite = async (route, ready) => {
+      await send('Page.navigate',{url:siteUrl+route});
+      let loaded=false;
+      for (let i=0;i<100;i++) { if (await evaluate(ready)) {loaded=true;break;} await delay(50); }
+      assert.ok(loaded,'Site did not finish mounting: '+route);
+      await evaluate('__advance(0)');
+    };
+    const advanceSite = time => evaluate(`for(let t=window.__time+100;t<=${time};t+=100) __advance(t)`);
+    await send('Emulation.setDeviceMetricsOverride',{width:1440,height:1000,deviceScaleFactor:1,mobile:false});
+    await openSite('/?preview=1',"!!document.querySelector('[data-clock]')?.dateTime");
+    await advanceSite(3400);
+    assert.equal(await evaluate('document.documentElement.dataset.stage'),'unlocked');
+    assert.equal(await evaluate("document.getElementById('wrapper-preview-link').hidden"),false);
+    assert.equal(await evaluate("new URL(document.querySelector('[data-creator-link]').href).pathname"),'/creator-studio.html');
+    await screenshot('site-landing-desktop.png');
+    await send('Emulation.setDeviceMetricsOverride',{width:390,height:844,deviceScaleFactor:1,mobile:true});
+    await screenshot('site-landing-mobile.png');
+    assert.equal(await evaluate('document.documentElement.scrollWidth'),390);
+    // Normal landing hands off to the local wrapper after the complete sequence.
+    await openSite('/',"!!document.querySelector('[data-clock]')?.dateTime");
+    await advanceSite(3400);
+    for(let i=0;i<100;i++) {if(await evaluate("document.getElementById('predictLauncher')?.hasAttribute('data-draggable-floating')")) break;await delay(50);}
+    assert.equal(await evaluate('location.pathname'),'/registration.html');
+    await advanceSite(1200);
+    assert.equal(await evaluate("document.getElementById('deposit-dialog').open"),true);
+    assert.equal(await evaluate("document.querySelector('[data-deposit-amount]').textContent"),'₹1,000');
+    assert.equal(await evaluate("document.querySelector('[data-registration-audio]').getAttribute('src')"),'./assets/audio/aviator_guide.mp3');
+    assert.equal(await evaluate("document.querySelector('[data-guidance-toolbar]').hidden"),false);
+    await evaluate("document.querySelector('[data-registration-audio]').load()");
+    for (let i=0;i<100;i++) {
+      if (await evaluate("Number.isFinite(document.querySelector('[data-registration-audio]').duration) && document.querySelector('[data-registration-audio]').duration>0")) break;
+      await delay(50);
+    }
+    assert.ok(await evaluate("Number.isFinite(document.querySelector('[data-registration-audio]').duration) && document.querySelector('[data-registration-audio]').duration>0"),'Voice file must decode with a valid duration');
+    await screenshot('site-deposit-mobile.png');
+    await click('[data-deposit-claim]');
+    assert.match(await evaluate("document.getElementById('dmfirst-frame').src"),/wallet\/Recharge/);
+    assert.equal(await evaluate("document.querySelector('[data-frame-fallback]').href"),await evaluate("document.querySelector('[data-open-direct]').href"));
+    await delay(25);
+    await click('[data-show-deposit]');
+    assert.equal(await evaluate("document.querySelector('[data-copy-code-value]')"),null);
+    assert.equal(await evaluate("document.querySelector('[data-copy-code-section]').textContent.includes(SIM_CONFIG.prediction.accessCode)"),false);
+    assert.equal(await evaluate("document.querySelector('[data-copy-code-section]').hidden"),false);
+    await evaluate("window.__clipboardWrites=0; Object.defineProperty(navigator,'clipboard',{configurable:true,value:{writeText(){window.__clipboardWrites++;return Promise.resolve();}}})");
+    await click('[data-copy-code-demo]'); await evaluate('__advance(window.__time+600)');
+    assert.equal(await evaluate("document.querySelector('[data-copy-code-label]').textContent"),'Demo complete');
+    assert.equal(await evaluate('window.__clipboardWrites'),0);
+    await click('[data-dismiss-deposit]'); await delay(25);
+    await click('#predictLauncher');
+    assert.equal(await evaluate("document.getElementById('predictionDialog').open"),true);
+    assert.equal(await evaluate("document.getElementById('predictPreview').hidden"),true);
+    await screenshot('prediction-access.png');
+    await evaluate("document.getElementById('predictCode').value='WRONG';document.getElementById('predictCodeForm').requestSubmit();__advance(window.__time+1800)");
+    assert.equal(await evaluate("document.getElementById('predictPercent').textContent"),'100%');
+    assert.equal(await evaluate("document.getElementById('predictionDialog').dataset.accessState"),'checking');
+    await evaluate('__advance(window.__time+300)');
+    assert.equal(await evaluate("document.getElementById('predictionDialog').dataset.accessState"),'failed');
+    assert.equal(await evaluate("document.getElementById('predictPreview').hidden"),true);
+    await evaluate("document.getElementById('predictCode').value='avfirst';document.getElementById('predictCodeForm').requestSubmit();__advance(window.__time+2100)");
+    await click('#predictRun'); await evaluate('__advance(window.__time+1800)');
+    assert.equal(await evaluate("document.getElementById('predictValue').textContent"),'1.24x');
+    await screenshot('site-prediction-mobile.png');
+    await click('#predictRun'); await evaluate('__advance(window.__time+1800)');
+    assert.equal(await evaluate("document.getElementById('predictValue').textContent"),'2.56x');
+    await click('#predictClose'); await delay(25);
+    await send('Emulation.setDeviceMetricsOverride',{width:320,height:740,deviceScaleFactor:1,mobile:true});
+    assert.equal(await evaluate('document.documentElement.scrollWidth'),320);
+    await send('Emulation.setDeviceMetricsOverride',{width:1440,height:1000,deviceScaleFactor:1,mobile:false});
+    await screenshot('site-registration-desktop.png');
+    await click('[data-creator-link]');
+    for(let i=0;i<100;i++) {if(await evaluate("!!document.getElementById('action0')")) break;await delay(50);}
+    assert.equal(await evaluate('location.pathname'),'/creator-studio.html');
+    assert.match(await evaluate("document.querySelector('.funMode').textContent"),/DEMO SIMULATION/);
+    await click('#menuButton');
+    assert.equal(await evaluate("new URL(document.querySelector('.studioBack').href).pathname"),'/registration.html');
+    assert.equal((await fetch(siteUrl+'/.git/config')).status,404);
+    assert.equal((await fetch(siteUrl+'/README.md')).status,404);
+    assert.equal((await fetch(siteUrl+'/config.js')).status,200);
+    console.log('PASS: Aviator landing handoff, registration, deposit and code flow, preset previews, Creator Studio navigation, 320px mobile layout, and private-file blocking. External iframe blocked in tests.');
+
     await send('Emulation.setDeviceMetricsOverride', { width: 1903, height: 1031, deviceScaleFactor: 1, mobile: false });
     await open();
     assert.equal(await wallet(), 29999);
@@ -205,26 +291,13 @@ const delay = ms => new Promise(resolve => setTimeout(resolve, ms));
     await evaluate('__advance(window.__time + 5001)');
     assert.equal(await evaluate("document.querySelectorAll('.winNotification').length"), 0);
 
-    // Code-gated preview uses the same preset/round as the running simulation.
+    // Creator Studio opens directly and previews the running simulation's round.
     await send('Emulation.setDeviceMetricsOverride', { width:1903,height:1031,deviceScaleFactor:1,mobile:false });
     await open();
     await evaluate('SIM_CONFIG.crashPoints[0]=8.17');
     await click('#predictLauncher');
-    assert.equal(await evaluate("document.activeElement.id"), 'predictCode');
-    assert.equal(await evaluate("document.getElementById('predictPreview').hidden"), true);
-    await screenshot('prediction-access.png');
-    await click('#predictUnlock');
-    assert.match(await evaluate("document.getElementById('predictCodeError').textContent"), /Enter your access code/);
-    const submitCode = value => evaluate(`(() => { document.getElementById('predictCode').value=${JSON.stringify(value)}; document.getElementById('predictCodeForm').requestSubmit(); })()`);
-    await submitCode('WRONG');
-    await evaluate('__advance(1800)');
-    assert.equal(await evaluate("document.getElementById('predictPercent').textContent"), '100%');
-    assert.equal(await evaluate("document.getElementById('predictionDialog').dataset.accessState"), 'checking');
-    await evaluate('__advance(2100)');
-    assert.equal(await evaluate("document.getElementById('predictionDialog').dataset.accessState"), 'failed');
-    assert.equal(await evaluate("document.getElementById('predictAdmin').hidden"), false);
-    assert.equal(await evaluate("document.getElementById('predictPreview').hidden"), true);
-    await submitCode(' DMFIRST ');
+    assert.equal(await evaluate("document.getElementById('predictAccess').hidden"), true);
+    assert.equal(await evaluate("document.getElementById('predictPreview').hidden"), false);
     await evaluate('__advance(4200)');
     assert.equal(await evaluate("document.getElementById('predictPreview').hidden"), false);
     assert.equal(await evaluate("document.activeElement.id"), 'predictGameName');
@@ -256,11 +329,12 @@ const delay = ms => new Promise(resolve => setTimeout(resolve, ms));
     assert.equal(await evaluate("document.getElementById('predictValue').textContent"), '—x');
     assert.equal(await evaluate("document.getElementById('predictResult').getAttribute('aria-busy')"), 'false');
     await click('#predictClose'); await click('#predictLauncher');
-    assert.equal(await evaluate("document.getElementById('predictPreview').hidden"), true);
-    await submitCode('DMFIRST'); await click('#predictClose'); await click('#predictLauncher');
+    assert.equal(await evaluate("document.getElementById('predictPreview').hidden"), false);
+    await click('#predictRun'); await click('#predictClose'); await click('#predictLauncher');
     await evaluate('__advance(30000)');
-    assert.equal(await evaluate("document.getElementById('predictPreview').hidden"), true);
-    await submitCode('DMFIRST'); await evaluate('__advance(32100)');
+    assert.equal(await evaluate("document.getElementById('predictPreview').hidden"), false);
+    assert.equal(await evaluate("document.getElementById('predictValue').textContent"), '—x');
+    await evaluate('__advance(32100)');
     await send('Emulation.setEmulatedMedia', { features:[{name:'prefers-reduced-motion',value:'reduce'}] });
     await click('#predictRun');
     assert.equal(await evaluate("document.getElementById('predictValue').textContent"), '1.08x');
@@ -274,17 +348,17 @@ const delay = ms => new Promise(resolve => setTimeout(resolve, ms));
     // A config override is applied before app startup, as it would be in config.js.
     const overrides = await send('Page.addScriptToEvaluateOnNewDocument', {source:`
       Object.defineProperty(window,'SIM_CONFIG',{configurable:true,set(value){
-        value.prediction={...value.prediction,accessCode:'CUSTOM42',unlockDurationMs:0,unlockHoldMs:0,revealDurationMs:0,text:{widgetLabel:'PREVIEW'},adminContact:{text:'Support',url:'javascript:alert(1)'}};
+        value.prediction={...value.prediction,accessCode:'',unlockDurationMs:0,unlockHoldMs:0,revealDurationMs:0,text:{widgetLabel:'PREVIEW'},adminContact:{text:'Support',url:'javascript:alert(1)'}};
         Object.defineProperty(window,'SIM_CONFIG',{value,writable:true,configurable:true});
       }});
     `});
     await open();
     await send('Page.removeScriptToEvaluateOnNewDocument', {identifier:overrides.identifier});
     assert.equal(await evaluate("document.querySelector('#predictLauncher span').textContent"), 'PREVIEW');
-    await click('#predictLauncher'); await submitCode('DMFIRST'); await evaluate('__advance(1)');
-    assert.equal(await evaluate("document.getElementById('predictPreview').hidden"), true);
+    await click('#predictLauncher');
+    assert.equal(await evaluate("document.getElementById('predictPreview').hidden"), false);
     assert.equal(await evaluate("document.getElementById('predictAdminLink').hidden"), true);
-    await submitCode('CUSTOM42'); await evaluate('__advance(2)'); await click('#predictRun');
+    await click('#predictRun');
     assert.equal(await evaluate("document.getElementById('predictValue').textContent"), '1.24x');
     await click('#predictClose');
     const disabled = await send('Page.addScriptToEvaluateOnNewDocument', {source:`
@@ -415,6 +489,7 @@ const delay = ms => new Promise(resolve => setTimeout(resolve, ms));
     console.error(diagnostics.slice(-4000));
     throw error;
   } finally {
+    if(site) await new Promise(resolve=>site.close(resolve));
     socket?.close();
     browser.kill();
     // The profile is disposable and restricted to the directory created above.

@@ -1,116 +1,208 @@
-﻿<!doctype html>
-<html lang="en">
+<!doctype html>
+<html lang="en" data-stage="locked">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="theme-color" content="#151515">
-  <title>Aviator — Flight Simulation</title>
-  <link rel="stylesheet" href="styles.css">
-  <link rel="stylesheet" href="prediction.css">
-  <link rel="preload" as="image" type="image/svg+xml" href="assets/plane/plane-0.svg">
-  <link rel="preload" as="image" type="image/svg+xml" href="assets/plane/plane-1.svg">
-  <link rel="preload" as="image" type="image/svg+xml" href="assets/plane/plane-2.svg">
-  <link rel="preload" as="image" type="image/svg+xml" href="assets/plane/plane-3.svg">
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <meta name="description"
+          content="Your gateway to DmFirst. Preparing your affiliate referral and connecting you to registration."/>
+    <meta name="theme-color" content="#020c07"/>
+    <title>DM FIRST × Aviator — Access Portal</title>
+    <link rel="canonical" href="https://aviator.kalam.trade/"/>
+    <link rel="icon" type="image/svg+xml" href="./assets/images/favicon.svg"/>
+    <link rel="stylesheet" href="./css/styles.css"/>
+    <link rel="stylesheet" href="./css/animations.css"/>
+    <link rel="stylesheet" href="./css/aviator-site.css"/>
+    <script type="module" src="./js/main.js"></script>
 </head>
 <body>
-  <div class="app">
-    <header class="top">
-      <a class="brand" href="index.html" aria-label="Aviator demo home">Aviator</a>
-      <div class="topright">
-        <span class="wallet" id="wallet"></span><span class="currency" id="currency"></span>
-        <button class="menuButton" id="menuButton" aria-label="Demo settings" aria-expanded="false" aria-controls="settings">☰</button>
-      </div>
-      <div class="settings" id="settings" hidden>
-        <strong>Flight simulation</strong>
-        <p>Virtual credits · Preset outcomes<br>All players and bets are illustrative.</p>
-        <div class="settingsActions"><button id="pause">Pause</button><button id="next">Next round ↻</button></div>
-        <span id="roundLabel"></span>
-      </div>
+<canvas id="code-rain" class="code-rain" aria-hidden="true"></canvas>
+<div class="ambient-light" aria-hidden="true"></div>
+<div class="screen-texture" aria-hidden="true"></div>
+<main class="portal" aria-labelledby="portal-title">
+    <div class="frame-corners" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
+    <div class="frame-track" aria-hidden="true"></div>
+    <header class="portal-header">
+        <a class="wordmark" href="./" aria-label="DM First access portal">
+            <svg class="brand-mark" viewBox="0 0 30 30" aria-hidden="true">
+                <path d="M5 3h11l9 9v15H14L5 18Z"/>
+                <path d="m10 9 10 10M10 19V9h10"/>
+            </svg>
+            <span>DM FIRST<span class="wordmark-caption">AVIATOR ACCESS PORTAL</span></span>
+        </a>
+        <nav class="portal-nav"><a class="creator-link" href="./creator-studio.html" data-creator-link>Creator Studio ↗</a><span class="connection-status"><i></i> REFERRAL READY</span></nav>
     </header>
-    <div class="layout">
-      <aside class="bets" aria-label="Illustrative player bets">
-        <div class="tabs" role="tablist" aria-label="Player bets">
-          <button class="active" id="tab-all" data-tab="all" role="tab" aria-selected="true" aria-controls="betrows">All Bets</button>
-          <button id="tab-previous" data-tab="previous" role="tab" aria-selected="false" aria-controls="betrows">Previous</button>
-          <button id="tab-top" data-tab="top" role="tab" aria-selected="false" aria-controls="betrows">Top</button>
+    <section class="hero" aria-label="Registration access sequence">
+        <div class="hero-grid" aria-hidden="true"></div>
+        <img class="hooded-figure" src="./assets/images/hooded-figure.svg" alt="" width="560" height="430"
+             fetchpriority="high"/>
+        <div class="telemetry telemetry-left" aria-hidden="true">
+            <span class="micro-label">// CONNECTION_01</span><span>GAME: AVIATOR</span><span>ROUTE: DMFIRST</span><span>SESSION: <b
+                data-session-status>PREPARING</b></span>
+            <div class="telemetry-bars"><i></i><i></i><i></i><i></i><i></i></div>
         </div>
-        <div class="betSummary">
-          <div class="summaryTop"><div class="avatarStack" id="summaryAvatars"></div><strong id="totalWin">264.00</strong></div>
-          <div class="summaryBottom"><span><b id="count">167/180</b> Bets</span><span>Total win <span class="unit">USD</span></span></div>
-          <div class="summaryTrack"><span id="summaryProgress"></span></div>
+        <div class="telemetry telemetry-right" aria-hidden="true">
+            <span class="micro-label">DESTINATION //</span><span>REGISTRATION</span><span>INVITE ATTACHED</span><span>93458117528</span>
+            <div class="signal-blocks"><i></i><i></i><i></i><i></i></div>
         </div>
-        <div class="tableHead"><span>Player</span><span>Bet <span class="unit">USD</span></span><span>X</span><span>Win <span class="unit">USD</span></span></div>
-        <div class="betrows" id="betrows" role="tabpanel" aria-labelledby="tab-all"></div>
-        <footer class="sideFooter"><span>◈ &nbsp;Virtual credits only</span><span>SIMULATION</span></footer>
-      </aside>
-      <main class="main">
-        <div class="winNotifications" id="winNotifications" aria-label="Cash-out notifications" role="region"></div>
-        <div class="historyBar">
-          <div class="history" id="history" aria-label="Previous round multipliers"></div>
-          <button class="historyButton" id="historyButton" aria-label="Show round history" aria-expanded="false" aria-controls="historyPopover">◷ <span>⌄</span></button>
-          <div class="historyPopover" id="historyPopover" hidden><strong>Round history</strong><div id="expandedHistory"></div></div>
+        <div class="lock-scene" aria-hidden="true">
+            <span class="scope-line scope-line-left"></span><span class="scope-line scope-line-right"></span>
+            <span class="scope-coordinate coordinate-top">ACCESS / 001</span><span
+                class="scope-coordinate coordinate-bottom" data-lock-caption>STANDBY</span>
+            <div class="lock-aura"></div>
+            <svg class="lock-interface" viewBox="0 0 260 260">
+                <defs>
+                    <linearGradient id="lock-fill" x1="0" y1="0" x2="0.8" y2="1">
+                        <stop stop-color="#c0ffb6"/>
+                        <stop offset="0.5" stop-color="#58ff66"/>
+                        <stop offset="1" stop-color="#17c64b"/>
+                    </linearGradient>
+                    <radialGradient id="scope-fill">
+                        <stop stop-color="#0c371e" stop-opacity=".75"/>
+                        <stop offset="1" stop-color="#041009" stop-opacity=".1"/>
+                    </radialGradient>
+                </defs>
+                <circle cx="130" cy="130" r="119" class="scope-boundary"/>
+                <g class="ring ring-outer">
+                    <circle cx="130" cy="130" r="111"/>
+                    <path d="M130 19a111 111 0 0 1 105 75M130 241A111 111 0 0 1 25 166" class="ring-highlight"/>
+                    <rect x="125" y="15" width="10" height="9"/>
+                    <rect x="125" y="236" width="10" height="9"/>
+                </g>
+                <circle cx="130" cy="130" r="100" class="ring-ticks"/>
+                <g class="ring ring-inner">
+                    <circle cx="130" cy="130" r="91"/>
+                    <path d="M45 162a91 91 0 0 1 83-123M215 98a91 91 0 0 1-83 123" class="ring-highlight"/>
+                </g>
+                <circle cx="130" cy="130" r="81" fill="url(#scope-fill)" class="scope-center"/>
+                <circle cx="130" cy="130" r="75" class="scope-fine"/>
+                <circle cx="130" cy="130" r="119" class="scope-progress" pathLength="100"/>
+                <path class="lock-shackle" d="M106 124V103a24 24 0 0 1 48 0v21"/>
+                <rect class="lock-body" x="94" y="121" width="72" height="58" rx="9" fill="url(#lock-fill)"/>
+                <path class="lock-keyhole" d="M136 143a6 6 0 1 0-10 4l-2 11h12l-2-11a6 6 0 0 0 2-4"/>
+                <path class="lock-check" d="m113 150 11 11 24-26"/>
+                <g class="scope-crosses">
+                    <path d="M7 130h15m108-123v15m108 108h15M130 238v15"/>
+                    <circle cx="19" cy="130" r="3"/>
+                    <circle cx="241" cy="130" r="3"/>
+                </g>
+            </svg>
         </div>
-        <section class="arena" aria-label="Flight simulation">
-          <div class="funMode" title="Demo with virtual credits and predetermined outcomes">FUN MODE</div>
-          <div class="flightStage">
-            <button class="predictLauncher" id="predictLauncher" type="button" hidden aria-label="Open Aviator prediction preview" aria-controls="predictionDialog" aria-haspopup="dialog" aria-expanded="false">
-              <svg viewBox="0 0 28 28" aria-hidden="true"><circle cx="14" cy="14" r="10"/><path d="M14 1v4m0 18v4M1 14h4m18 0h4"/><image href="assets/plane/plane-0.svg" x="5" y="9" width="18" height="9"/></svg>
-              <span data-predict-text="widgetLabel">PREDICT</span>
-            </button>
-            <svg id="flightSvg" viewBox="0 0 1000 500" preserveAspectRatio="none" aria-hidden="true"></svg>
-            <div id="status" class="centerStatus" role="status"></div>
-            <div class="spectators" title="Illustrative spectators"><div class="avatarStack" id="spectatorAvatars"></div><b>97</b></div>
-          </div>
-        </section>
-        <div class="controlRow" id="controlRow" aria-label="Virtual bet controls"></div>
-      </main>
-    </div>
-  </div>
-  <div class="toast" id="toast" role="alert" hidden></div>
-  <dialog class="predictDialog" id="predictionDialog" aria-labelledby="predictAccessTitle" aria-describedby="predictAccessHelp">
-    <header class="predictHeader">
-      <span><i></i> <b id="predictBrand">DM FIRST</b> <span class="predictSlash">/</span> SIMULATION</span>
-      <button id="predictClose" type="button" aria-label="Close prediction preview">×</button>
-    </header>
-    <div class="predictTerminal">
-      <span class="predictTerminalPlane" aria-hidden="true"><img src="assets/plane/plane-0.svg" alt="" width="150" height="74"></span>
-      <div><span class="predictTerminalCommand"><span aria-hidden="true">&gt;_</span> <span data-predict-text="terminalLabel">FLIGHT TERMINAL</span></span><strong data-predict-game>Aviator</strong></div>
-      <span class="predictTerminalMode">MODULE <b>01</b></span>
-    </div>
-    <section id="predictAccess" class="predictAccess">
-      <div class="predictLock" aria-hidden="true"><svg viewBox="0 0 80 80"><circle class="predictOrbit" cx="40" cy="40" r="35"/><circle cx="40" cy="5" r="2.5"/><path d="M28 34v-9a12 12 0 0 1 24 0v9"/><rect x="22" y="33" width="36" height="29" rx="5"/><path d="M40 44v8"/></svg></div>
-      <h2 id="predictAccessTitle" tabindex="-1">Enter access code</h2>
-      <p id="predictAccessHelp" class="predictHelp" role="status"></p>
-      <form id="predictCodeForm" novalidate>
-        <label for="predictCode">Access code</label>
-        <input id="predictCode" name="access-code" type="password" required maxlength="128" autocomplete="off" autocapitalize="characters" spellcheck="false" aria-invalid="false" aria-describedby="predictCodeError">
-        <p id="predictCodeError" class="predictError" role="alert" hidden></p>
-        <aside id="predictAdmin" class="predictAdmin" hidden><strong>Contact Admin</strong><span>Telegram DM</span><span id="predictAdminText"></span><a id="predictAdminLink" target="_blank" rel="noopener noreferrer" hidden></a></aside>
-        <button class="predictAction" id="predictUnlock" type="submit">Unlock</button>
-      </form>
-      <div id="predictChecking" class="predictChecking" hidden>
-        <p><span>Checking access</span><strong id="predictPercent">0%</strong></p>
-        <div id="predictProgress" class="predictProgress" role="progressbar" aria-label="Code check progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><span></span></div>
-      </div>
+        <div class="hero-title">
+            <p class="eyebrow"><span></span> YOUR AVIATOR ACCESS STARTS HERE <span></span></p>
+            <h1 id="portal-title" class="glitch-title" data-text="DM FIRST"><span>DM</span> FIRST</h1>
+            <p class="hero-subtitle"><img class="aviator-mark" src="./assets/plane/plane-0.svg" alt="" width="150" height="74"/> AVIATOR <span>FLIGHT TERMINAL</span></p>
+        </div>
     </section>
-    <section id="predictPreview" class="predictPreview" hidden>
-      <div class="predictGame"><span>FLIGHT PREVIEW</span><h2 id="predictGameName" tabindex="-1">Aviator</h2></div>
-      <div class="predictRound"><span id="predictRoundLabel">Round 1</span><span id="predictRoundPhase">Upcoming</span></div>
-      <div class="predictResult" id="predictResult" aria-busy="false">
-        <svg class="predictTelemetry" viewBox="0 0 350 160" preserveAspectRatio="none" aria-hidden="true"><path class="predictTelemetryGrid" d="M0 40h350M0 80h350M0 120h350M70 0v160M140 0v160M210 0v160M280 0v160"/><path class="predictTelemetryCurve" d="M8 148Q178 148 326 24"/><circle cx="326" cy="24" r="3"/></svg>
-        <span data-predict-text="resultLabel">Preset crash multiplier</span>
-        <div class="predictValue" id="predictValue">—<small>x</small></div>
-        <span class="predictReady" id="predictReady" hidden>✓ PREVIEW READY</span>
-      </div>
-      <button class="predictAction" id="predictRun" type="button">Predict</button>
-      <p class="predictStatus" id="predictStatus" role="status">Select Predict to reveal this demo round.</p>
-      <p class="predictDisclosure" id="predictDisclosure">Preset simulation · No live game data</p>
+    <section class="access-strip" aria-label="Current connection status">
+        <div class="access-indicator">
+            <svg viewBox="0 0 42 42" aria-hidden="true">
+                <circle cx="21" cy="21" r="17"/>
+                <circle cx="21" cy="21" r="10"/>
+                <circle cx="21" cy="21" r="4"/>
+                <path d="M21 0v8m0 26v8M0 21h8m26 0h8"/>
+            </svg>
+            <span>ACCESS<span data-access-status>PREPARING</span></span></div>
+        <div class="node-status"><span>NODE—01</span><strong data-node-status>REGISTRATION ROUTE</strong></div>
+        <time class="session-clock" data-clock aria-label="Local time">00:00:00</time>
     </section>
-    <footer class="predictFooter">LOCAL DEMO <span>VIRTUAL CREDITS ONLY</span></footer>
-  </dialog>
-  <script src="config.js"></script>
-  <script src="flight.js"></script>
-  <script src="prediction.js"></script>
-  <script src="app.js"></script>
+    <section class="console" aria-labelledby="console-title">
+        <div class="panel-heading"><h2 id="console-title">SYSTEM CONSOLE</h2><span class="heading-rule"></span><span
+                class="console-dots" aria-hidden="true"><i></i><i></i><i></i></span></div>
+        <ol class="console-lines">
+            <li data-console-step="0">
+                <svg aria-hidden="true">
+                    <use href="./assets/images/icons.svg#gear"/>
+                </svg>
+                <span>Initializing <em>visual interface</em><span class="line-tail"> ...</span></span><span
+                    class="line-check" aria-hidden="true">✓</span></li>
+            <li data-console-step="1">
+                <svg aria-hidden="true">
+                    <use href="./assets/images/icons.svg#key"/>
+                </svg>
+                <span>Preparing <em>registration link</em><span class="line-tail"> ...</span></span><span
+                    class="line-check" aria-hidden="true">✓</span></li>
+            <li data-console-step="2">
+                <svg aria-hidden="true">
+                    <use href="./assets/images/icons.svg#shield"/>
+                </svg>
+                <span>Attaching <em>your referral ID</em><span class="line-tail"> ...</span></span><span
+                    class="line-check" aria-hidden="true">✓</span></li>
+            <li data-console-step="3">
+                <svg aria-hidden="true">
+                    <use href="./assets/images/icons.svg#route"/>
+                </svg>
+                <span>Preparing <em>destination route</em><span class="line-tail"> ...</span></span><span
+                    class="line-check" aria-hidden="true">✓</span></li>
+            <li data-console-step="4">
+                <svg aria-hidden="true">
+                    <use href="./assets/images/icons.svg#database"/>
+                </svg>
+                <span>Finishing <em>portal sequence</em><span class="line-tail"> ...</span></span><span
+                    class="line-check" aria-hidden="true">✓</span></li>
+            <li data-console-step="5" class="console-final">
+                <svg aria-hidden="true">
+                    <use href="./assets/images/icons.svg#fingerprint"/>
+                </svg>
+                <span>Referral ready — <em>LET’S GO</em><span class="terminal-cursor"
+                                                              aria-hidden="true"></span></span><span class="line-check"
+                                                                                                     aria-hidden="true">✓</span>
+            </li>
+        </ol>
+        <span class="console-caption" aria-hidden="true">DMF://AVIATOR / REGISTRATION</span>
+    </section>
+    <section class="progress-section" aria-labelledby="progress-label">
+        <div class="progress-heading"><h2 id="progress-label" data-progress-label>PREPARING YOUR ACCESS</h2><span
+                class="progress-value"><span data-progress-value>0</span><span class="percent-sign">%</span></span>
+        </div>
+        <div class="progress-track" role="progressbar" aria-labelledby="progress-label" aria-valuemin="0"
+             aria-valuemax="100" aria-valuenow="0">
+            <div class="progress-fill"><span class="progress-shine"></span></div>
+            <div class="progress-segments" aria-hidden="true"></div>
+        </div>
+        <div class="progress-footnote"><span data-redirect-status>Registration opens automatically</span><span
+                class="transfer-label" aria-hidden="true">DMFIRST <span>↗</span></span></div>
+    </section>
+    <section class="status-grid" aria-label="Portal preparation status">
+        <div class="status-tile" data-status-tile="0">
+            <svg aria-hidden="true">
+                <use href="./assets/images/icons.svg#fingerprint"/>
+            </svg>
+            <h2>INTERFACE</h2>
+            <p data-tile-label>LOADING</p><span class="tile-index" aria-hidden="true">01</span></div>
+        <div class="status-tile" data-status-tile="1">
+            <svg aria-hidden="true">
+                <use href="./assets/images/icons.svg#database"/>
+            </svg>
+            <h2>REFERRAL</h2>
+            <p data-tile-label>STANDBY</p><span class="tile-index" aria-hidden="true">02</span></div>
+        <div class="status-tile" data-status-tile="2">
+            <svg aria-hidden="true">
+                <use href="./assets/images/icons.svg#bolt"/>
+            </svg>
+            <h2>ROUTE</h2>
+            <p data-tile-label>STANDBY</p><span class="tile-index" aria-hidden="true">03</span></div>
+        <div class="status-tile" data-status-tile="3">
+            <svg aria-hidden="true">
+                <use href="./assets/images/icons.svg#shield-check"/>
+            </svg>
+            <h2>PORTAL</h2>
+            <p data-tile-label>LOCKED</p><span class="tile-index" aria-hidden="true">04</span></div>
+    </section>
+    <footer class="portal-footer"><span class="footer-cross" aria-hidden="true">+</span>
+        <p>© <span data-year>2026</span> <strong>DM FIRST</strong> <span class="footer-divider">/</span> AFFILIATE
+            PORTAL</p><span class="footer-id" aria-hidden="true">SYS.01</span></footer>
+    <p class="disclosure">Continuing to DmFirst registration through an affiliate referral. <span>18+ · Play responsibly.</span>
+    </p>
+    <p class="preview-notice" id="preview-notice" hidden>PREVIEW MODE <span>•</span> Automatic navigation paused</p>
+    <p class="redirect-fallback" id="wrapper-preview-link" hidden><a data-wrapper-link href="./registration.html">Open
+        registration preview ↗</a></p>
+    <p class="redirect-fallback" id="redirect-fallback" hidden><a data-wrapper-link href="./registration.html">Continue
+        to registration ↗</a></p>
+    <noscript><p class="redirect-fallback">JavaScript is required for the animated transition. <a
+            href="./registration.html">Continue to registration ↗</a></p></noscript>
+    <p class="sr-only" role="status" id="sequence-announcement">Preparing your DmFirst registration referral.</p>
+</main>
+
+
 </body>
 </html>

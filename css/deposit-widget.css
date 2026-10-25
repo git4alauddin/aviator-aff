@@ -1,0 +1,118 @@
+[data-draggable-floating] {
+    touch-action: none;
+    user-select: none;
+    -webkit-user-select: none;
+    -webkit-touch-callout: none;
+}
+
+[data-draggable-floating] > * {
+    pointer-events: none;
+}
+
+[data-draggable-floating][data-drag-pressed] {
+    animation-play-state: paused;
+}
+
+[data-draggable-floating][data-dragging] {
+    z-index: 11;
+    animation: none;
+    transform: none;
+    cursor: grabbing;
+}
+
+.deposit-widget {
+    position: fixed;
+    right: max(24px, env(safe-area-inset-right));
+    bottom: max(24px, env(safe-area-inset-bottom));
+    z-index: 10;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 66px;
+    height: 66px;
+    border: 1px solid #a2ffb5;
+    border-radius: 50%;
+    background: radial-gradient(circle at 35% 20%, #205f33, #062514 70%);
+    color: #b9ffca;
+    cursor: pointer;
+    animation: deposit-widget-nudge 4.5s ease-in-out .5s infinite;
+}
+
+.deposit-widget > span {
+    font-family: "Segoe UI", sans-serif;
+    font-size: 27px;
+    font-weight: 700;
+    line-height: 1.1;
+}
+
+.deposit-widget small {
+    margin-top: 3px;
+    color: #8ec79f;
+    font-family: inherit;
+    font-size: 6px;
+    letter-spacing: 1px;
+}
+
+.deposit-widget:hover {
+    border-color: #d2ffdf;
+}
+
+.deposit-widget:hover, .deposit-widget:focus-visible {
+    animation: none;
+    transform: none;
+}
+
+.deposit-widget:focus-visible {
+    outline: 2px solid #d2ffdf;
+    outline-offset: 5px;
+}
+
+@keyframes deposit-widget-nudge {
+    0%, 76%, 90%, 100% {
+        transform: translateY(0);
+    }
+    80% {
+        transform: translateY(-12px);
+    }
+    84% {
+        transform: translateY(0);
+    }
+    87% {
+        transform: translateY(-4px);
+    }
+}
+
+.deposit-minimize-ghost {
+    position: fixed;
+    z-index: 9;
+    display: grid;
+    place-items: center;
+    pointer-events: none;
+    border: 1px solid #9bffb5;
+    background: #0a2b17;
+    color: #c2ffcf;
+    font-family: "Segoe UI", sans-serif;
+    font-size: 28px;
+}
+
+@media (max-width: 600px) {
+    .deposit-widget {
+        width: 58px;
+        height: 58px;
+        right: max(17px, env(safe-area-inset-right));
+        bottom: max(17px, env(safe-area-inset-bottom));
+    }
+
+    .deposit-widget > span {
+        font-size: 24px;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .deposit-widget {
+        animation: none;
+        transform: none;
+    }
+}
+
