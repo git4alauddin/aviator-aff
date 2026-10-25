@@ -22,6 +22,7 @@ Open index.html in Chrome, Edge, Firefox, or Safari. No server, installation, or
 - Auto mode exposes automatic bet placement and an optional cash-out multiplier.
 - All Bets, Previous, and Top show illustrative results; the history button opens previous multipliers.
 - The top-right menu contains Pause / Resume and Next round. Skipping refunds unsettled stakes.
+- PREDICT opens the DM FIRST style code prompt, with checking progress, retry feedback, and optional admin contact. After unlocking, it reveals the selected demo round's configured crash multiplier. Results clear when their round ends or is skipped.
 
 ## Files
 
@@ -31,10 +32,23 @@ Open index.html in Chrome, Edge, Firefox, or Safari. No server, installation, or
 | styles.css | Desktop and mobile layouts |
 | app.js | Round state, virtual balances, controls, history, and sample players |
 | flight.js | Original-frame aircraft animation and time-based curve renderer |
+| prediction.js / prediction.css | Code entry and round-aware Aviator preset preview |
 | assets/plane/ | Four original plane SVG frames from the official public demo |
 | config.js | Predetermined results, timing, virtual starting balance, and drawing options |
 
 The display unit defaults to USD to match the reference; it labels virtual credits. The starting balance is 29,999.00. Changing these values never connects the demo to real payments.
+
+## Prediction preview configuration
+
+The code-entry interaction is adapted from [dmfirst-affiliation](https://github.com/git4alauddin/dmfirst-affiliation), specifically `js/prediction-widget.js` and `js/prediction-config.js`. Its WinGo number/size/color results are replaced with an Aviator multiplier. Only the selected public settings are copied into `SIM_CONFIG.prediction` in this project's `config.js`; there is no runtime dependency on GitHub or the affiliate registration/deposit pages.
+
+- `enabled`: show or hide PREDICT.
+- `accessCode`: defaults to `DMFIRST`; matching is case-sensitive and trims surrounding spaces. An empty code disables unlocking. This is a public browser-side UI gate, not secure authentication; keep secrets out of config.js.
+- `brand`, `gameName`, and `text`: selected labels for the launcher, code prompt, buttons, and result caption; omitted text fields retain defaults.
+- `adminContact`: `telegramUsername`, fallback `text`, and optional `url`. A username becomes a Telegram link; supported contact URLs use HTTPS, mailto, or tel.
+- `unlockDurationMs`, `unlockHoldMs`, `revealDurationMs`: checking progress, the hold at 100%, and multiplier reveal timing. Reduced motion skips cycling digits.
+
+The result comes from `crashPoints`, using the same round index as the flight. During countdown or flight it previews that round; after a crash it previews the next round. Predicting again returns the same preset for the same round. The game passes only the round ID, phase, and target into the widget. A round change cancels an unfinished reveal and clears stale results, including when the sequence loops. This feature reveals known simulation data; it does not forecast real Aviator outcomes or connect to a live game.
 
 ## Flight configuration
 

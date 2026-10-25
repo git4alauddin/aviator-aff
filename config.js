@@ -20,5 +20,26 @@ window.SIM_CONFIG = {
   initialCredits: 29999,
   initialHistory: [2.19, 1.87, 1.08, 1.20, 3.44, 2.93, 1.18, 1.27, 2.61, 1.30, 2.12, 1.26, 1.74, 1.04, 1.18, 1.00, 1.00, 1.02, 1.60, 1.76, 1.30, 5.99, 1.04, 1.03, 3.34, 1.18, 2.34, 1.42, 4.23, 1.08],
   maxDisplayedHistory: 30,
+  // Selected public settings adapted from dmfirst-affiliation/js/prediction-config.js.
+  prediction: {
+    enabled: true,
+    accessCode: 'DMFIRST',      // Public browser-side gate, not secure authentication.
+    brand: 'DM FIRST',
+    gameName: 'Aviator',
+    unlockDurationMs: 1800,
+    unlockHoldMs: 300,
+    revealDurationMs: 1800,
+    adminContact: { telegramUsername: '', text: '@mr_kalam0', url: '' },
+    text: {
+      widgetLabel: 'PREDICT',
+      terminalLabel: 'FLIGHT TERMINAL',
+      entryTitle: 'Enter access code',
+      entryHelp: 'Enter your code to open the Aviator preview.',
+      unlockButton: 'Unlock',
+      predictButton: 'Predict',
+      predictAgainButton: 'Predict again',
+      resultLabel: 'Preset crash multiplier',
+    },
+  },
   // All outcomes are predetermined: this is a demonstration, not a prediction engine.
 };

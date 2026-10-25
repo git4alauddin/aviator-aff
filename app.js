@@ -6,6 +6,7 @@
   const flight = new window.FlightRenderer($('flightSvg'), { ...cfg.flight, growthRate: cfg.growthRate });
   const panels = Array.from({ length: 2 }, () => ({ stake: 1, state: 'idle', cashMult: null, cashAmount: null, auto: false, autoCash: false, cashAt: 2 }));
   let sequence = 0, phase = 'waiting', phaseStart = performance.now();
+  let roundId = 1;
   let paused = false, pausedAt = 0, multiplier = 1, balance = cfg.initialCredits;
   let history = [...cfg.initialHistory], activeTab = 'all', previousRows = [], liveRows = [];
   let lastRowsUpdate = -1, toastTimer;
@@ -192,7 +193,7 @@
     } else {
       flight.draw(duration(target) / 1000, 'crashed', age / 1000, target);
       $('status').innerHTML = `<div class="crashCaption">FLEW AWAY!</div><div class="crashMult">${fmt(target)}x</div>`;
-      if (age >= cfg.postCrashSeconds * 1000) { sequence = (sequence + 1) % cfg.crashPoints.length; startWaiting(now); }
+      if (age >= cfg.postCrashSeconds * 1000) { sequence = (sequence + 1) % cfg.crashPoints.length; roundId++; startWaiting(now); }
     }
     updateControls();
   }
@@ -218,11 +219,21 @@
     // Skipping a demonstration round refunds unsettled stakes.
     panels.forEach(b => { if (locked(b)) { balance = +(balance + b.stake).toFixed(2); b.state = 'idle'; } });
     sequence = (sequence + 1) % cfg.crashPoints.length;
+    roundId++;
     const now = performance.now(); if (paused) pausedAt = now;
     startWaiting(now); updateWallet(); render(now);
   });
   $('summaryAvatars').innerHTML = $('spectatorAvatars').innerHTML = [1,7,3].map(avatar).join('');
   buildControls(); renderHistory(); updateWallet(); startWaiting(performance.now());
+  // Pass only public widget settings and a round snapshot, never the whole game config.
+  window.mountAviatorPrediction(cfg.prediction, () => {
+    const next = phase === 'crashed';
+    return {
+      id: roundId + Number(next),
+      phase: next ? 'waiting' : phase,
+      target: cfg.crashPoints[(sequence + Number(next)) % cfg.crashPoints.length],
+    };
+  });
   function tick(now) { if (!paused) render(now); requestAnimationFrame(tick); }
   requestAnimationFrame(tick);
 })();

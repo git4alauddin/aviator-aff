@@ -205,7 +205,101 @@ const delay = ms => new Promise(resolve => setTimeout(resolve, ms));
     await evaluate('__advance(window.__time + 5001)');
     assert.equal(await evaluate("document.querySelectorAll('.winNotification').length"), 0);
 
-﻿    const motion = await evaluate(`(() => {
+    // Code-gated preview uses the same preset/round as the running simulation.
+    await send('Emulation.setDeviceMetricsOverride', { width:1903,height:1031,deviceScaleFactor:1,mobile:false });
+    await open();
+    await evaluate('SIM_CONFIG.crashPoints[0]=8.17');
+    await click('#predictLauncher');
+    assert.equal(await evaluate("document.activeElement.id"), 'predictCode');
+    assert.equal(await evaluate("document.getElementById('predictPreview').hidden"), true);
+    await screenshot('prediction-access.png');
+    await click('#predictUnlock');
+    assert.match(await evaluate("document.getElementById('predictCodeError').textContent"), /Enter your access code/);
+    const submitCode = value => evaluate(`(() => { document.getElementById('predictCode').value=${JSON.stringify(value)}; document.getElementById('predictCodeForm').requestSubmit(); })()`);
+    await submitCode('WRONG');
+    await evaluate('__advance(1800)');
+    assert.equal(await evaluate("document.getElementById('predictPercent').textContent"), '100%');
+    assert.equal(await evaluate("document.getElementById('predictionDialog').dataset.accessState"), 'checking');
+    await evaluate('__advance(2100)');
+    assert.equal(await evaluate("document.getElementById('predictionDialog').dataset.accessState"), 'failed');
+    assert.equal(await evaluate("document.getElementById('predictAdmin').hidden"), false);
+    assert.equal(await evaluate("document.getElementById('predictPreview').hidden"), true);
+    await submitCode(' DMFIRST ');
+    await evaluate('__advance(4200)');
+    assert.equal(await evaluate("document.getElementById('predictPreview').hidden"), false);
+    assert.equal(await evaluate("document.activeElement.id"), 'predictGameName');
+    await click('#predictRun'); await click('#predictRun');
+    assert.equal(await evaluate("document.getElementById('predictRun').disabled"), true);
+    await evaluate('__advance(6000)');
+    assert.equal(await evaluate("document.getElementById('predictValue').textContent"), '8.17x');
+    assert.equal(await evaluate("document.getElementById('predictReady').hidden"), false);
+    await screenshot('prediction-desktop.png');
+    await click('#predictRun'); await evaluate('__advance(7800)');
+    assert.equal(await evaluate("document.getElementById('predictValue').textContent"), '8.17x');
+    assert.equal(await wallet(), 29999);
+    await send('Emulation.setDeviceMetricsOverride', { width:390,height:844,deviceScaleFactor:1,mobile:true });
+    await screenshot('prediction-mobile.png');
+    const predictionBox = await evaluate("(() => { const r=document.getElementById('predictionDialog').getBoundingClientRect(); return {left:r.left,right:r.right,top:r.top,bottom:r.bottom,scroll:document.documentElement.scrollWidth}; })()");
+    assert.ok(predictionBox.left>=0 && predictionBox.right<=390 && predictionBox.top>=0 && predictionBox.bottom<=844);
+    assert.equal(predictionBox.scroll,390);
+    // Advancing the game invalidates a previous result and cancels pending reveals.
+    await click('#next'); await evaluate('__advance(7801)');
+    assert.equal(await evaluate("document.getElementById('predictRoundLabel').textContent"), 'Round 2');
+    assert.equal(await evaluate("document.getElementById('predictValue').textContent"), '—x');
+    await click('#predictRun'); await evaluate('__advance(9601)');
+    assert.equal(await evaluate("document.getElementById('predictValue').textContent"), '2.56x');
+    await evaluate('__advance(11801); __advance(25000)');
+    assert.equal(await evaluate("document.getElementById('predictRoundLabel').textContent"), 'Round 3');
+    await click('#predictRun'); await evaluate('__advance(26800); __advance(27600)');
+    assert.equal(await evaluate("document.getElementById('predictValue').textContent"), '5.80x');
+    await click('#predictRun'); await click('#next'); await evaluate('__advance(27601)');
+    assert.equal(await evaluate("document.getElementById('predictValue').textContent"), '—x');
+    assert.equal(await evaluate("document.getElementById('predictResult').getAttribute('aria-busy')"), 'false');
+    await click('#predictClose'); await click('#predictLauncher');
+    assert.equal(await evaluate("document.getElementById('predictPreview').hidden"), true);
+    await submitCode('DMFIRST'); await click('#predictClose'); await click('#predictLauncher');
+    await evaluate('__advance(30000)');
+    assert.equal(await evaluate("document.getElementById('predictPreview').hidden"), true);
+    await submitCode('DMFIRST'); await evaluate('__advance(32100)');
+    await send('Emulation.setEmulatedMedia', { features:[{name:'prefers-reduced-motion',value:'reduce'}] });
+    await click('#predictRun');
+    assert.equal(await evaluate("document.getElementById('predictValue').textContent"), '1.08x');
+    await send('Input.dispatchKeyEvent', {type:'keyDown',key:'Escape',code:'Escape',windowsVirtualKeyCode:27});
+    await send('Input.dispatchKeyEvent', {type:'keyUp',key:'Escape',code:'Escape',windowsVirtualKeyCode:27});
+    await delay(50); // Native dialog cancellation and close events are queued.
+    assert.equal(await evaluate("document.getElementById('predictionDialog').open"), false);
+    assert.equal(await evaluate("document.activeElement.id"), 'predictLauncher');
+    await send('Emulation.setEmulatedMedia', {features:[]});
+
+    // A config override is applied before app startup, as it would be in config.js.
+    const overrides = await send('Page.addScriptToEvaluateOnNewDocument', {source:`
+      Object.defineProperty(window,'SIM_CONFIG',{configurable:true,set(value){
+        value.prediction={...value.prediction,accessCode:'CUSTOM42',unlockDurationMs:0,unlockHoldMs:0,revealDurationMs:0,text:{widgetLabel:'PREVIEW'},adminContact:{text:'Support',url:'javascript:alert(1)'}};
+        Object.defineProperty(window,'SIM_CONFIG',{value,writable:true,configurable:true});
+      }});
+    `});
+    await open();
+    await send('Page.removeScriptToEvaluateOnNewDocument', {identifier:overrides.identifier});
+    assert.equal(await evaluate("document.querySelector('#predictLauncher span').textContent"), 'PREVIEW');
+    await click('#predictLauncher'); await submitCode('DMFIRST'); await evaluate('__advance(1)');
+    assert.equal(await evaluate("document.getElementById('predictPreview').hidden"), true);
+    assert.equal(await evaluate("document.getElementById('predictAdminLink').hidden"), true);
+    await submitCode('CUSTOM42'); await evaluate('__advance(2)'); await click('#predictRun');
+    assert.equal(await evaluate("document.getElementById('predictValue').textContent"), '1.24x');
+    await click('#predictClose');
+    const disabled = await send('Page.addScriptToEvaluateOnNewDocument', {source:`
+      Object.defineProperty(window,'SIM_CONFIG',{configurable:true,set(value){
+        value.prediction.enabled=false;
+        Object.defineProperty(window,'SIM_CONFIG',{value,writable:true,configurable:true});
+      }});
+    `});
+    await open();
+    await send('Page.removeScriptToEvaluateOnNewDocument', {identifier:disabled.identifier});
+    await click('#predictLauncher');
+    assert.equal(await evaluate("document.getElementById('predictLauncher').hidden"), true);
+    assert.equal(await evaluate("document.getElementById('predictionDialog').open"), false);
+
+    const motion = await evaluate(`(() => {
       const fixtures = ${JSON.stringify(reference.positionFixtures)};
       const stage = document.createElement('div');
       stage.className = 'flightStage';
@@ -315,7 +409,7 @@ const delay = ms => new Promise(resolve => setTimeout(resolve, ms));
     await evaluate('__advance(4000+(Math.log(10)/SIM_CONFIG.growthRate+.6)*1000)');
     await screenshot('high-multiplier.png');
     assert.deepEqual(errors, []);
-    console.log(JSON.stringify({ status: 'PASS', checks: ['public-reference desktop and mobile position fixtures', 'smooth 8-second climb and 4-second glide each way', 'single quadratic arc reshapes during descent', '2x and 10x palette thresholds with smooth blending', 'curve clears and glow fades on fly-away', '36-second ray revolution and continuity between rounds', 'original plane asset hashes and decoding', 'original four-frame propeller sequence at 7.5 fps', 'propeller pause and reduced motion', 'stake locking and cancellation', 'queued bets', 'history and tabs', 'independent panel balances', 'automatic and manual cash out', 'win notifications from both panels', 'exact displayed payout and balance credit', 'notification dismissal and expiry', 'settled payout survives stake changes', 'crash settlement', 'skip refunds', 'pause and resume', 'desktop and mobile overflow', 'no runtime exceptions'], motion, desktop, mobile, winBox, screenshots: ['preview/desktop.png', 'preview/mobile.png', 'preview/desktop-win.png', 'preview/mobile-win.png'] }, null, 2));
+    console.log(JSON.stringify({ status: 'PASS', checks: ['public-reference desktop and mobile position fixtures', 'smooth 8-second climb and 4-second glide each way', 'single quadratic arc reshapes during descent', '2x and 10x palette thresholds with smooth blending', 'curve clears and glow fades on fly-away', '36-second ray revolution and continuity between rounds', 'original plane asset hashes and decoding', 'original four-frame propeller sequence at 7.5 fps', 'propeller pause and reduced motion', 'stake locking and cancellation', 'queued bets', 'history and tabs', 'independent panel balances', 'automatic and manual cash out', 'win notifications from both panels', 'exact displayed payout and balance credit', 'notification dismissal and expiry', 'settled payout survives stake changes', 'crash settlement', 'skip refunds', 'pause and resume', 'desktop and mobile overflow', 'prediction code gate, progress hold, retry, and focus', 'prediction config overrides and disabled widget', 'round-matched preset multiplier and stale-result cancellation', 'prediction reduced motion and desktop/mobile dialog bounds', 'no runtime exceptions'], motion, desktop, mobile, winBox, screenshots: ['preview/desktop.png', 'preview/mobile.png', 'preview/desktop-win.png', 'preview/mobile-win.png', 'preview/prediction-access.png', 'preview/prediction-desktop.png', 'preview/prediction-mobile.png'] }, null, 2));
     await send('Browser.close');
   } catch (error) {
     console.error(diagnostics.slice(-4000));
