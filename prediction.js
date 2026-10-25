@@ -26,7 +26,7 @@
     const timing = (value, fallback) => Number.isFinite(value) && value >= 0 ? value : fallback;
     const unlockMs = timing(settings.unlockDurationMs, 1800);
     const holdMs = timing(settings.unlockHoldMs, 300);
-    const revealMs = timing(settings.revealDurationMs, 1800);
+    const revealMs = timing(settings.revealDurationMs, 720);
     const motion = matchMedia('(prefers-reduced-motion: reduce)');
     const contact = settings.adminContact || {};
     const username = typeof contact.telegramUsername === 'string' ? contact.telegramUsername.trim().replace(/^@/, '') : '';

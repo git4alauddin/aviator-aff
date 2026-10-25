@@ -1,0 +1,14 @@
+.studioGate{position:fixed;inset:0;z-index:60;display:grid;place-items:center;padding:20px;overflow:auto;background:radial-gradient(ellipse at 50% 25%,#11331d,#050b07 70%)}
+.studioGateCard{width:100%;max-width:400px;margin:auto;padding:26px;border:1px solid #43724c;border-top-color:#f00b3e;border-radius:16px;background:#09130de8;box-shadow:0 24px 80px #0008}
+.studioGateBrand{padding-bottom:18px;border-bottom:1px solid #a4ff8920;font:10px Consolas,monospace;letter-spacing:1.5px;font-weight:bold;color:#c6f4c8}.studioGateBrand span{color:#6e9378;font-weight:normal}
+.studioGatePlane{display:block;width:78px;height:auto;margin:24px auto 20px}
+.studioGateEyebrow{text-align:center;font:9px Consolas,monospace;letter-spacing:2px;color:#a4ff89}
+.studioGate h1{margin:10px 0;font-size:27px;text-align:center;color:#f1fff1;letter-spacing:-.7px}
+.studioGateHelp{margin:10px 0 24px;text-align:center;color:#91a99a;font-size:12px;line-height:1.7}
+.studioGate label{display:block;margin-bottom:9px;font-size:11px;color:#b5c9ba}
+.studioGate input{width:100%;min-height:46px;padding:10px 13px;border:1px solid #46614c;border-radius:8px;background:#030906;color:#efffee;font-size:17px}
+.studioGate input[aria-invalid=true]{border-color:#ff7c8d}.studioGateError{font-size:12px;line-height:1.5;color:#ff99a6;margin:10px 0}
+.studioGate button{width:100%;min-height:46px;margin-top:16px;border:1px solid #baff9d;border-radius:8px;background:#a4ff89;color:#112813;font-weight:bold}.studioGate button:disabled{opacity:.6}
+.studioGateBack{display:block;margin-top:22px;text-align:center;color:#91ba9d;font-size:11px;text-underline-offset:4px}
+.studioGate input:focus-visible,.studioGate button:focus-visible,.studioGate a:focus-visible{outline-color:#a4ff89}
+@media(max-width:400px){.studioGate{padding:16px}.studioGateCard{padding:22px}}

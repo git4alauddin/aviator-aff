@@ -1,7 +1,8 @@
 /* The DM FIRST code-entry style, scoped to the Aviator preview. */
-.predictLauncher{position:absolute;right:15px;top:14px;z-index:4;display:flex;align-items:center;gap:7px;padding:8px 11px;border:1px solid #78ee7b88;border-radius:10px;color:#a6ff9a;background:#09150fea;box-shadow:0 3px 14px #0007;font-size:10px;font-weight:800;letter-spacing:1px}
-.predictLauncher:hover{background:#16351d;border-color:#a6ff9a}
-.predictLauncher svg{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:1.6}
+.predictLauncher{position:absolute;right:15px;top:14px;z-index:4;display:flex;align-items:center;gap:7px;min-height:44px;padding:8px;border:0;border-radius:10px;background:transparent;color:#a4ff89}
+.predictLauncher:hover{background:#f00b3e12}
+.predictLauncher img{display:block;width:48px;height:auto;filter:drop-shadow(0 2px 5px #0008)}
+.predictLauncher>span{font-size:10px;font-weight:800;letter-spacing:1px}
 .predictDialog{--neon:#a4ff89;--flight-red:#f00b3e;width:410px;max-width:calc(100vw - 28px);max-height:calc(100dvh - 28px);padding:0;border:1px solid #487849;border-top-color:#b93650;border-radius:18px;background:radial-gradient(ellipse at 100% 15%,#f00b3e0c,transparent 45%),radial-gradient(ellipse at 50% 20%,#17332166,transparent 60%),#08100c;color:#edf8ed;box-shadow:0 24px 90px #000b,0 0 40px #73ee7a10;overflow:auto;scrollbar-width:thin}
 .predictDialog::backdrop{background:#000b;backdrop-filter:blur(5px)}
 .predictDialog button:focus-visible,.predictDialog input:focus-visible,.predictDialog a:focus-visible{outline-color:var(--neon)}
@@ -35,4 +36,4 @@
 .predictResult>span[data-predict-text]{font:9px/1.5 Consolas,"Courier New",monospace;letter-spacing:1px;text-transform:uppercase;color:#9bb6a1}.predictValue{font-size:66px;line-height:1.2;font-weight:800;letter-spacing:-3px;color:#f4fff0;font-variant-numeric:tabular-nums;white-space:nowrap;overflow-wrap:anywhere}.predictValue small{font-size:27px;color:var(--neon);margin-left:4px;letter-spacing:0}.predictReady{display:block;margin:8px auto 0;font:9px/1.5 Consolas,"Courier New",monospace;letter-spacing:1.6px;color:var(--neon)}
 .predictPreview .predictAction{margin-top:4px}.predictStatus{min-height:32px;color:#9db5a3;text-align:center;font-size:11px;line-height:1.6;margin:14px 0 10px}.predictDisclosure{font-size:10px;line-height:1.6;text-align:center;color:#8caa94;margin:12px 0 6px}
 .predictFooter{display:flex;justify-content:space-between;gap:10px;font-size:8px;letter-spacing:1px;color:#6e8d77;border-top:1px solid #a4ff8917;padding:14px 20px;margin-top:14px}
-@media(max-width:420px){.predictLauncher{top:10px;right:10px;padding:7px 9px;font-size:9px}.predictLauncher svg{width:19px;height:19px}.predictAccess,.predictPreview{padding:20px 22px 10px}.predictValue{font-size:58px}.predictHeader{padding:12px 16px}.predictTerminal{margin:0 16px;padding:12px 0}}
+@media(max-width:420px){.predictLauncher{top:10px;right:10px;min-height:44px;padding:8px}.predictLauncher>span{font-size:9px}.predictLauncher img{width:40px;height:auto}.predictAccess,.predictPreview{padding:20px 22px 10px}.predictValue{font-size:58px}.predictHeader{padding:12px 16px}.predictTerminal{margin:0 16px;padding:12px 0}}

@@ -23,16 +23,18 @@ also works by opening its HTML file directly.
 ## Flow and settings
 
 The landing opens the registration wrapper. Deposit details appear after the
-configured delay. Claim opens wallet recharge in the iframe; Open directly remains
-available if the external site blocks embedding. Reopening details after Claim
+configured delay. Claim opens wallet recharge in the iframe. The top-right area
+contains only Creator Studio. Reopening details through the floating widget after Claim
 shows a Copy Code button simulation. It animates loading and completion feedback
 without reading or writing the clipboard or displaying the access password.
 A Claim click does not verify a deposit or registration.
 
 PREDICT asks for the configured code, then previews local
 Aviator presets. Visitor results cycle through presets and never read the external
-iframe or live game. Creator Studio opens its prediction panel without a password
-and follows its own simulation rounds. Visitor access still requires the code. Activity
+iframe or live game. Creator Studio requires its separate entry password from
+`SIM_CONFIG.studio.accessCode`, then opens its prediction panel directly and
+follows its own simulation rounds. This is a simple browser-side entry gate.
+Visitor access still requires its own code. Activity
 is visibly labeled fictional sample data. Studio recordings retain a visible
 **CREATOR STUDIO · DEMO SIMULATION** banner.
 

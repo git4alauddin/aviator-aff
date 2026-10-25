@@ -64,6 +64,13 @@ const delay = ms => new Promise(resolve => setTimeout(resolve, ms));
     ` });
     const open = async () => {
       await send('Page.navigate', { url: pathToFileURL(path.join(__dirname, 'creator-studio.html')).href });
+      for (let i=0;i<100;i++) {
+        if (await evaluate("!!document.getElementById('studioGateForm') && !!window.SIM_CONFIG")) break;
+        await delay(50);
+      }
+      assert.equal(await evaluate("document.getElementById('studioGate').hidden"),false);
+      assert.equal(await evaluate("!!document.getElementById('action0')"),false);
+      await evaluate("document.getElementById('studioPassword').value='@creator';document.getElementById('studioGateForm').requestSubmit()");
       for (let i = 0; i < 100; i++) {
         if (await evaluate("!!document.getElementById('action0') && !!window.__advance")) break;
         await delay(50);
@@ -136,9 +143,10 @@ const delay = ms => new Promise(resolve => setTimeout(resolve, ms));
     await screenshot('site-deposit-mobile.png');
     await click('[data-deposit-claim]');
     assert.match(await evaluate("document.getElementById('dmfirst-frame').src"),/wallet\/Recharge/);
-    assert.equal(await evaluate("document.querySelector('[data-frame-fallback]').href"),await evaluate("document.querySelector('[data-open-direct]').href"));
+    assert.equal(await evaluate("document.querySelector('.frame-help')"),null);
+    assert.equal(await evaluate("document.querySelector('.registration-actions').children.length"),1);
     await delay(25);
-    await click('[data-show-deposit]');
+    await click('[data-deposit-widget]');
     assert.equal(await evaluate("document.querySelector('[data-copy-code-value]')"),null);
     assert.equal(await evaluate("document.querySelector('[data-copy-code-section]').textContent.includes(SIM_CONFIG.prediction.accessCode)"),false);
     assert.equal(await evaluate("document.querySelector('[data-copy-code-section]').hidden"),false);
@@ -169,8 +177,27 @@ const delay = ms => new Promise(resolve => setTimeout(resolve, ms));
     await send('Emulation.setDeviceMetricsOverride',{width:1440,height:1000,deviceScaleFactor:1,mobile:false});
     await screenshot('site-registration-desktop.png');
     await click('[data-creator-link]');
-    for(let i=0;i<100;i++) {if(await evaluate("!!document.getElementById('action0')")) break;await delay(50);}
+    for(let i=0;i<100;i++) {if(await evaluate("!!document.getElementById('studioGateForm') && !!window.SIM_CONFIG")) break;await delay(50);}
     assert.equal(await evaluate('location.pathname'),'/creator-studio.html');
+    assert.equal(await evaluate("document.getElementById('studioApp').hidden"),true);
+    assert.equal(await evaluate("!!document.getElementById('action0')"),false);
+    await screenshot('studio-access-desktop.png');
+    await send('Emulation.setDeviceMetricsOverride',{width:390,height:844,deviceScaleFactor:1,mobile:true});
+    await screenshot('studio-access-mobile.png');
+    assert.equal(await evaluate('document.documentElement.scrollWidth'),390);
+    await evaluate("document.getElementById('studioGateForm').requestSubmit()");
+    assert.match(await evaluate("document.getElementById('studioGateError').textContent"),/Enter your creator password/);
+    await evaluate("document.getElementById('studioPassword').value='avfirst';document.getElementById('studioGateForm').requestSubmit();__advance(5000)");
+    assert.match(await evaluate("document.getElementById('studioGateError').textContent"),/Incorrect password/);
+    assert.equal(await evaluate("!!document.getElementById('action0')"),false);
+    await evaluate("document.getElementById('studioPassword').value='@creator';document.getElementById('studioGateForm').requestSubmit()");
+    for(let i=0;i<100;i++) {if(await evaluate("!!document.getElementById('action0')")) break;await delay(50);}
+    assert.equal(await evaluate("document.getElementById('studioGate').hidden"),true);
+    assert.equal(await evaluate("document.getElementById('studioApp').inert"),false);
+    await click('#predictLauncher');
+    assert.equal(await evaluate("document.getElementById('predictPreview').hidden"),false);
+    await click('#predictClose'); await delay(25);
+    await send('Emulation.setDeviceMetricsOverride',{width:1440,height:1000,deviceScaleFactor:1,mobile:false});
     assert.match(await evaluate("document.querySelector('.funMode').textContent"),/DEMO SIMULATION/);
     await click('#menuButton');
     assert.equal(await evaluate("new URL(document.querySelector('.studioBack').href).pathname"),'/registration.html');
@@ -303,7 +330,9 @@ const delay = ms => new Promise(resolve => setTimeout(resolve, ms));
     assert.equal(await evaluate("document.activeElement.id"), 'predictGameName');
     await click('#predictRun'); await click('#predictRun');
     assert.equal(await evaluate("document.getElementById('predictRun').disabled"), true);
-    await evaluate('__advance(6000)');
+    await evaluate('__advance(4919)');
+    assert.equal(await evaluate("document.getElementById('predictRun').disabled"), true);
+    await evaluate('__advance(4920)');
     assert.equal(await evaluate("document.getElementById('predictValue').textContent"), '8.17x');
     assert.equal(await evaluate("document.getElementById('predictReady').hidden"), false);
     await screenshot('prediction-desktop.png');

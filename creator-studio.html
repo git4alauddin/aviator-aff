@@ -7,13 +7,30 @@
   <title>DM FIRST × Aviator — Creator Studio</title>
   <link rel="stylesheet" href="styles.css">
   <link rel="stylesheet" href="prediction.css">
+  <link rel="stylesheet" href="css/creator-studio.css">
   <link rel="preload" as="image" type="image/svg+xml" href="assets/plane/plane-0.svg">
   <link rel="preload" as="image" type="image/svg+xml" href="assets/plane/plane-1.svg">
   <link rel="preload" as="image" type="image/svg+xml" href="assets/plane/plane-2.svg">
   <link rel="preload" as="image" type="image/svg+xml" href="assets/plane/plane-3.svg">
 </head>
 <body>
-  <div class="app">
+  <main class="studioGate" id="studioGate" aria-labelledby="studioGateTitle">
+    <section class="studioGateCard">
+      <div class="studioGateBrand">DM FIRST <span>/ AVIATOR</span></div>
+      <img class="studioGatePlane" src="assets/plane/plane-0.svg" alt="" width="150" height="74">
+      <p class="studioGateEyebrow">CREATOR ACCESS</p>
+      <h1 id="studioGateTitle">Creator Studio</h1>
+      <p class="studioGateHelp">Enter your creator password to open the recording simulation.</p>
+      <form id="studioGateForm" novalidate>
+        <label for="studioPassword">Creator password</label>
+        <input id="studioPassword" name="creator-password" type="password" required maxlength="128" autocomplete="current-password" autocapitalize="none" spellcheck="false" aria-invalid="false" aria-describedby="studioGateError">
+        <p class="studioGateError" id="studioGateError" role="alert" hidden></p>
+        <button id="studioUnlock" type="submit">Open Studio</button>
+      </form>
+      <a class="studioGateBack" href="registration.html">← Back to Aviator site</a>
+    </section>
+  </main>
+  <div class="app" id="studioApp" hidden inert>
     <header class="top">
       <a class="brand" href="creator-studio.html" aria-label="Aviator Creator Studio">Aviator</a>
       <div class="topright">
@@ -55,7 +72,7 @@
           <div class="funMode" title="Creator recording demo with virtual credits and predetermined outcomes">CREATOR STUDIO · DEMO SIMULATION</div>
           <div class="flightStage">
             <button class="predictLauncher" id="predictLauncher" type="button" hidden aria-label="Open Aviator prediction preview" aria-controls="predictionDialog" aria-haspopup="dialog" aria-expanded="false">
-              <svg viewBox="0 0 28 28" aria-hidden="true"><circle cx="14" cy="14" r="10"/><path d="M14 1v4m0 18v4M1 14h4m18 0h4"/><image href="assets/plane/plane-0.svg" x="5" y="9" width="18" height="9"/></svg>
+              <img src="assets/plane/plane-0.svg" alt="" width="150" height="74">
               <span data-predict-text="widgetLabel">PREDICT</span>
             </button>
             <svg id="flightSvg" viewBox="0 0 1000 500" preserveAspectRatio="none" aria-hidden="true"></svg>
@@ -112,6 +129,6 @@
   <script src="config.js"></script>
   <script src="flight.js"></script>
   <script src="prediction.js"></script>
-  <script src="app.js"></script>
+  <script src="js/studio-access.js"></script>
 </body>
 </html>

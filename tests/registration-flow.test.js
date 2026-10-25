@@ -78,7 +78,6 @@ function fixture() {
         frame: page.querySelector("#dmfirst-frame"),
         widget: page.querySelector("[data-deposit-widget]"),
         claim: dialog.querySelector("[data-deposit-claim]"),
-        show: page.querySelector("[data-show-deposit]"),
         firePromotion() {
             if (!cancelled) callback();
         },
@@ -126,7 +125,6 @@ test("only an ordinary Claim click requests wallet recharge in the existing ifra
     const event = click(state.claim);
     assert.equal(event.defaultPrevented, true);
     assert.equal(state.frame.src, config.depositUrl);
-    assert.equal(state.page.querySelector("[data-open-direct]").href, config.depositUrl);
     assert.equal(state.dialog.open, false);
     assert.equal(state.widget.hidden, false);
     state.flow.destroy();
@@ -174,16 +172,12 @@ test("copy section stays hidden until Claim, then appears on later popup visits"
     fresh.flow.destroy();
 });
 
-test("manual opening cancels the delayed popup and cleanup releases controls", () => {
+test("cleanup cancels the delayed popup and releases the floating control", () => {
     const state = fixture();
-    click(state.show);
+    state.flow.destroy();
     assert.equal(state.cancelled, true);
-    assert.equal(state.dialog.open, true);
-    state.dialog.close();
     state.firePromotion();
     assert.equal(state.dialog.open, false);
-    state.flow.destroy();
-    click(state.show);
     click(state.widget);
     assert.equal(state.dialog.open, false);
 });
