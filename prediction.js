@@ -9,7 +9,7 @@
     if (settings?.enabled !== true) return;
     launcher.hidden = false;
     const text = {
-      widgetLabel: 'PREDICT', terminalLabel: 'FLIGHT TERMINAL', entryTitle: 'Enter access code',
+      widgetLabel: 'PREDICT', terminalLabel: 'FLIGHT DECK', entryTitle: 'Enter access code',
       entryHelp: 'Enter your code to open the Aviator preview.',
       unlockButton: 'Unlock', predictButton: 'Predict',
       predictAgainButton: 'Predict again', resultLabel: 'Preset crash multiplier',

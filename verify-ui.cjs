@@ -84,6 +84,7 @@ const delay = ms => new Promise(resolve => setTimeout(resolve, ms));
     const wallet = () => evaluate("Number(document.getElementById('wallet').textContent.replaceAll(',', ''))");
     const screenshot = async name => {
       await evaluate('document.getAnimations().forEach(animation => { if (Number.isFinite(animation.effect.getComputedTiming().endTime)) animation.finish(); else animation.pause(); })');
+      await delay(60); // Allow viewport changes and the themed layers to paint.
       const image = await send('Page.captureScreenshot', { format: 'png', captureBeyondViewport: false });
       fs.mkdirSync(path.join(__dirname, 'preview'), { recursive: true });
       fs.writeFileSync(path.join(__dirname, 'preview', name), Buffer.from(image.data, 'base64'));
@@ -116,6 +117,10 @@ const delay = ms => new Promise(resolve => setTimeout(resolve, ms));
     const advanceSite = time => evaluate(`for(let t=window.__time+100;t<=${time};t+=100) __advance(t)`);
     await send('Emulation.setDeviceMetricsOverride',{width:1440,height:1000,deviceScaleFactor:1,mobile:false});
     await openSite('/?preview=1',"!!document.querySelector('[data-clock]')?.dateTime");
+    const takeoffStart = await evaluate("Number(document.getElementById('takeoffPlane').getAttribute('x'))");
+    await advanceSite(900);
+    assert.ok(await evaluate("Number(document.getElementById('takeoffPlane').getAttribute('x'))") > takeoffStart);
+    await screenshot('site-boarding-desktop.png');
     await advanceSite(3400);
     assert.equal(await evaluate('document.documentElement.dataset.stage'),'unlocked');
     assert.equal(await evaluate("document.getElementById('wrapper-preview-link').hidden"),false);
@@ -175,6 +180,9 @@ const delay = ms => new Promise(resolve => setTimeout(resolve, ms));
     await send('Emulation.setDeviceMetricsOverride',{width:320,height:740,deviceScaleFactor:1,mobile:true});
     assert.equal(await evaluate('document.documentElement.scrollWidth'),320);
     await send('Emulation.setDeviceMetricsOverride',{width:1440,height:1000,deviceScaleFactor:1,mobile:false});
+    const floating = await evaluate(`['#predictLauncher','[data-deposit-widget]'].map(selector=>{const el=document.querySelector(selector),r=el.getBoundingClientRect();return {x:r.x,y:r.y,right:r.right,bottom:r.bottom,initialBottom:getComputedStyle(el).bottom};})`);
+    assert.equal(floating[0].initialBottom,floating[1].initialBottom);
+    assert.ok(floating[0].x>=0 && floating[0].right<720 && floating[1].x>720 && floating[1].right<=1440);
     await screenshot('site-registration-desktop.png');
     await click('[data-creator-link]');
     for(let i=0;i<100;i++) {if(await evaluate("!!document.getElementById('studioGateForm') && !!window.SIM_CONFIG")) break;await delay(50);}

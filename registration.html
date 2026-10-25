@@ -3,12 +3,12 @@
 <head>
     <meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1"/>
-    <meta name="theme-color" content="#020c07"/>
+    <meta name="theme-color" content="#111217"/>
     <meta name="description"
           content="Continue to DmFirst registration through our affiliate referral and view minimum-deposit details."/>
     <title>DM FIRST × Aviator — Registration</title>
     <link rel="canonical" href="https://aviator.kalam.trade/registration.html"/>
-    <link rel="icon" type="image/svg+xml" href="./assets/images/favicon.svg"/>
+    <link rel="icon" type="image/svg+xml" href="./assets/plane/plane-0.svg"/>
     <link rel="stylesheet" href="./css/styles.css"/>
     <link rel="stylesheet" href="./css/deposit.css"/>
     <link rel="stylesheet" href="./css/deposit-widget.css"/>
@@ -16,6 +16,7 @@
     <link rel="stylesheet" href="./css/activity-ticker.css"/>
     <link rel="stylesheet" href="./prediction.css"/>
     <link rel="stylesheet" href="./css/aviator-site.css"/>
+    <link rel="stylesheet" href="./css/aviator-theme.css"/>
     <link rel="preload" as="image" href="./assets/images/avatars/img.png"/>
     <link rel="preload" as="image" href="./assets/images/avatars/img_1.png"/>
     <link rel="preload" as="image" href="./assets/images/avatars/img_2.png"/>
@@ -31,11 +32,8 @@
 <body class="registration-page">
 <header class="registration-header">
     <a class="wordmark" href="./?preview=1" aria-label="Preview the DM First access animation">
-        <svg class="brand-mark" viewBox="0 0 30 30" aria-hidden="true">
-            <path d="M5 3h11l9 9v15H14L5 18Z"/>
-            <path d="m10 9 10 10M10 19V9h10"/>
-        </svg>
-        <span>DM FIRST<span class="wordmark-caption">AVIATOR ACCESS</span></span>
+        <svg class="brand-mark" viewBox="0 0 150 74" aria-hidden="true"><image href="./assets/plane/plane-0.svg" width="150" height="74"/></svg>
+        <span>Aviator<span class="wordmark-caption">WITH DM FIRST</span></span>
     </a>
     <section class="activity-ticker" data-activity-ticker data-phase="visible" data-kind="deposit" data-mode="demo"
              aria-label="Demo activity, fictional example: Aarav_24, ****21 Deposit, ₹500" tabindex="0">
@@ -59,7 +57,7 @@
 </header>
 <audio data-registration-audio preload="none"></audio>
 <div class="registration-guidance" data-guidance-toolbar hidden>
-    <span>Voice guidance</span>
+    <span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9h4l5-4v14l-5-4H4ZM17 8q4 4 0 8m3-11q6 7 0 14"/></svg>Voice guidance</span>
     <button type="button" data-guidance-toggle>Play guidance</button>
     <span class="sr-only" role="status" data-guidance-status></span>
 </div>
@@ -69,7 +67,7 @@
             referrerpolicy="strict-origin-when-cross-origin"></iframe>
 </main>
 <button class="deposit-widget" type="button" data-deposit-widget hidden aria-label="Reopen minimum deposit details"
-        aria-controls="deposit-dialog" aria-haspopup="dialog"><span aria-hidden="true">₹</span><small>DETAILS</small>
+        aria-controls="deposit-dialog" aria-haspopup="dialog"><span aria-hidden="true">₹</span><small>CLAIM</small>
 </button>
 <button class="prediction-widget" id="predictLauncher" type="button" hidden aria-label="Open Aviator preview" aria-controls="predictionDialog" aria-haspopup="dialog" aria-expanded="false"><img src="assets/plane/plane-0.svg" alt="" width="150" height="74"><span data-predict-text="widgetLabel">PREDICT</span></button>
 <noscript><p class="registration-noscript">Minimum deposit: ₹500 (INR). <a
@@ -86,19 +84,9 @@
         </button>
     </header>
     <div class="deposit-art" aria-hidden="true">
-        <span class="deposit-art-coordinate">RECHARGE / 01</span>
-        <svg class="deposit-orbit" viewBox="0 0 144 144">
-            <circle class="deposit-orbit-outer" cx="72" cy="72" r="62"/>
-            <circle class="deposit-orbit-ticks" cx="72" cy="72" r="55"/>
-            <path class="deposit-orbit-arc" d="M72 10a62 62 0 0 1 60 47M72 134a62 62 0 0 1-60-47"/>
-            <path class="deposit-wallet-back" d="m46 56 41-12 6 15"/>
-            <rect class="deposit-wallet-body" x="39" y="55" width="67" height="43" rx="7"/>
-            <path class="deposit-wallet-flap" d="M93 68h17v18H93a9 9 0 0 1 0-18Z"/>
-            <circle class="deposit-wallet-dot" cx="95" cy="77" r="2"/>
-            <path class="deposit-wallet-line" d="M49 87h18"/>
-            <path class="deposit-orbit-crosses" d="M72 3v12m0 114v12M3 72h12m114 0h12"/>
-        </svg>
-        <span class="deposit-art-caption">YOUR NEXT MOVE</span>
+        <span class="deposit-art-coordinate">AVIATOR / FLIGHT WALLET</span>
+        <svg class="depositFlightArt" viewBox="0 0 180 100"><path class="walletRunway" d="M8 88h164"/><path d="M8 84Q80 84 136 32"/><image href="assets/plane/plane-0.svg" x="90" y="1" width="84" height="42"/></svg>
+        <span class="deposit-art-caption">YOUR NEXT FLIGHT</span>
     </div>
     <h2 id="deposit-title" class="deposit-title" tabindex="-1" data-deposit-heading>Minimum deposit</h2>
     <p class="deposit-amount" data-deposit-amount>₹500</p>
@@ -136,11 +124,11 @@
     </header>
     <div class="predictTerminal">
       <span class="predictTerminalPlane" aria-hidden="true"><img src="assets/plane/plane-0.svg" alt="" width="150" height="74"></span>
-      <div><span class="predictTerminalCommand"><span aria-hidden="true">&gt;_</span> <span data-predict-text="terminalLabel">FLIGHT TERMINAL</span></span><strong data-predict-game>Aviator</strong></div>
+      <div><span class="predictTerminalCommand"><span aria-hidden="true">&gt;_</span> <span data-predict-text="terminalLabel">FLIGHT DECK</span></span><strong data-predict-game>Aviator</strong></div>
       <span class="predictTerminalMode">MODULE <b>01</b></span>
     </div>
     <section id="predictAccess" class="predictAccess">
-      <div class="predictLock" aria-hidden="true"><svg viewBox="0 0 80 80"><circle class="predictOrbit" cx="40" cy="40" r="35"/><circle cx="40" cy="5" r="2.5"/><path d="M28 34v-9a12 12 0 0 1 24 0v9"/><rect x="22" y="33" width="36" height="29" rx="5"/><path d="M40 44v8"/></svg></div>
+      <p class="flightAccessEyebrow">FLIGHT ACCESS</p>
       <h2 id="predictAccessTitle" tabindex="-1">Enter access code</h2>
       <p id="predictAccessHelp" class="predictHelp" role="status"></p>
       <form id="predictCodeForm" novalidate>

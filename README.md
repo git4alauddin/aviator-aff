@@ -4,6 +4,12 @@ DM FIRST portal adapted for `aviator.kalam.trade`: landing animation, registrati
 and wallet wrapper, deposit details, draggable widgets, configurable voice, and
 an Aviator preset preview. Creator Studio opens the existing flight simulation.
 
+The visitor experience uses Aviator red, dark flight-deck surfaces, original plane
+art, and a takeoff curve that advances with loading progress. The header, wallet
+popup, floating controls, prediction panel, and Creator Studio entry share this
+theme. DM FIRST remains the registration/wallet partner; the embedded site keeps
+its own interface. Theme overrides are in `css/aviator-theme.css`.
+
 ## Preview
 
 Node.js 20+ is required. No dependencies need installing.

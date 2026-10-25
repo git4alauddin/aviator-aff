@@ -35,7 +35,7 @@ globalThis.SIM_CONFIG = {
     adminContact: { telegramUsername: '', text: '@mr_kalam0', url: '' },
     text: {
       widgetLabel: 'PREDICT',
-      terminalLabel: 'FLIGHT TERMINAL',
+      terminalLabel: 'FLIGHT DECK',
       entryTitle: 'Enter access code',
       entryHelp: 'Enter your code to open the Aviator preview.',
       unlockButton: 'Unlock',

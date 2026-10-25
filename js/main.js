@@ -1,5 +1,5 @@
 import {config} from "./config.js";
-import {playAccessSequence, startCodeRain} from "./animations.js";
+import {playAccessSequence} from "./animations.js";
 
 const root = document.documentElement;
 document.querySelector('link[rel="canonical"]').href = new URL('/', config.siteUrl).href;
@@ -17,9 +17,6 @@ const tileCompleteLabels = ["LOADED", "ATTACHED", "READY", "OPEN"];
 const motionPreference = window.matchMedia("(prefers-reduced-motion: reduce)");
 let lastProgress = -1;
 let lastStage = "";
-let finished = false;
-let stopRain = () => {
-};
 let navigationFrame;
 let fallbackTimer;
 
@@ -43,20 +40,20 @@ function updateClock() {
 updateClock();
 const clockTimer = window.setInterval(updateClock, 1000);
 
-function updateMotion() {
-    stopRain(true);
-    if (!motionPreference.matches && !finished) stopRain = startCodeRain(document.querySelector("#code-rain"));
-}
-
-updateMotion();
-motionPreference.addEventListener("change", updateMotion);
-
 function render({progress, stage}) {
     if (progress !== lastProgress) {
         root.style.setProperty("--progress", `${progress}%`);
         root.style.setProperty("--progress-number", String(progress));
         progressBar.setAttribute("aria-valuenow", String(progress));
         percent.textContent = String(progress);
+        // A takeoff arc follows loading progress; reduced motion keeps it static.
+        const t = motionPreference.matches ? 1 : progress / 100;
+        const x = 24 + 452 * t - 26 * t * t, y = 264 - 174 * t * t;
+        const arc = `M24 264Q${24 + 226 * t} 264 ${x} ${y}`;
+        document.getElementById('takeoffCurve').setAttribute('d', arc);
+        document.getElementById('takeoffArea').setAttribute('d', `${arc}L${x} 264Z`);
+        document.getElementById('takeoffPlane').setAttribute('x', x - 21);
+        document.getElementById('takeoffPlane').setAttribute('y', y - 66.6);
         const currentStep = stepThresholds.findLastIndex((threshold) => progress >= threshold);
         steps.forEach((step, index) => {
             step.classList.toggle("is-visible", index <= currentStep);
@@ -69,7 +66,7 @@ function render({progress, stage}) {
             const complete = progress >= tileThresholds[index];
             tile.classList.toggle("is-complete", complete);
             tile.classList.toggle("is-active", index === activeTile);
-            const label = index === 3 ? "LOCKED" : complete ? tileCompleteLabels[index] : index === 0 ? "LOADING" : "STANDBY";
+            const label = index === 3 ? "BOARDING" : complete ? tileCompleteLabels[index] : index === 0 ? "LOADING" : "STANDBY";
             tile.querySelector("[data-tile-label]").textContent = label;
         });
         lastProgress = progress;
@@ -79,29 +76,27 @@ function render({progress, stage}) {
         const complete = stage !== "locked";
         const opening = stage === "unlocking" || stage === "unlocked";
         document.querySelector("[data-session-status]").textContent = complete ? "READY" : "PREPARING";
-        document.querySelector("[data-lock-caption]").textContent = opening ? "ACCESS OPEN" : complete ? "LINK READY" : "STANDBY";
+        document.querySelector("[data-lock-caption]").textContent = opening ? "READY FOR TAKEOFF" : complete ? "FLIGHT READY" : "PREPARING FLIGHT";
         document.querySelector("[data-access-status]").textContent = opening ? "OPEN" : complete ? "READY" : "PREPARING";
         document.querySelector("[data-node-status]").textContent = opening ? "REGISTRATION LINK READY" : "REGISTRATION ROUTE";
-        progressLabel.textContent = opening ? "ACCESS OPEN — LET’S GO" : complete ? "REFERRAL LINK READY" : "PREPARING YOUR ACCESS";
+        progressLabel.textContent = opening ? "Ready for takeoff" : complete ? "Flight prepared" : "Preparing your flight";
         if (opening) {
             tiles[3].querySelector("[data-tile-label]").textContent = "OPEN";
             redirectStatus.textContent = preview ? "Preview complete — automatic navigation paused" : "Opening DmFirst registration…";
-            announcement.textContent = preview ? "Preview: lock opened. Registration preview is available below." : "Access sequence complete. Opening the registration page.";
+            announcement.textContent = preview ? "Flight preview complete. Registration is available below." : "Flight preparation complete. Opening the registration page.";
         }
         lastStage = stage;
     }
 }
 
 function complete() {
-    finished = true;
     root.dataset.finished = "true";
-    stopRain();
     window.clearInterval(clockTimer);
     if (preview) {
         document.querySelector("#wrapper-preview-link").hidden = false;
         return;
     }
-    // Paint the completed unlock before navigating to our local wrapper.
+    // Paint the completed takeoff before navigating to the registration wrapper.
     navigationFrame = requestAnimationFrame(() => {
         navigationFrame = requestAnimationFrame(() => {
             try {
@@ -120,11 +115,9 @@ const stopSequence = playAccessSequence({timing: config.sequence, onUpdate: rend
 
 window.addEventListener("pagehide", () => {
     stopSequence();
-    stopRain();
     window.clearInterval(clockTimer);
     cancelAnimationFrame(navigationFrame);
     window.clearTimeout(fallbackTimer);
-    motionPreference.removeEventListener("change", updateMotion);
 }, {once: true});
 
 window.addEventListener("pageshow", (event) => {
