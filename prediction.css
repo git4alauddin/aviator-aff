@@ -1,4 +1,21 @@
 /* The DM FIRST code-entry style, scoped to the Aviator preview. */
+/* Decorative icons stay in place when button labels change during access checks. */
+#predictUnlock, #studioUnlock {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+}
+#predictUnlock::before, #studioUnlock::before {
+  content: "";
+  display: block;
+  flex: 0 0 17px;
+  width: 17px;
+  height: 17px;
+  background: currentColor;
+  -webkit-mask: url("./assets/images/access-lock.svg") center / contain no-repeat;
+  mask: url("./assets/images/access-lock.svg") center / contain no-repeat;
+}
 .predictLauncher{position:absolute;right:15px;top:14px;z-index:4;display:flex;align-items:center;gap:7px;min-height:44px;padding:8px;border:0;border-radius:10px;background:transparent;color:#a4ff89}
 .predictLauncher:hover{background:#f00b3e12}
 .predictLauncher img{display:block;width:48px;height:auto;filter:drop-shadow(0 2px 5px #0008)}
