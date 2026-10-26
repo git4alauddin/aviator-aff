@@ -12,3 +12,39 @@
 .studioGateBack{display:block;margin-top:22px;text-align:center;color:#91ba9d;font-size:11px;text-underline-offset:4px}
 .studioGate input:focus-visible,.studioGate button:focus-visible,.studioGate a:focus-visible{outline-color:#a4ff89}
 @media(max-width:400px){.studioGate{padding:16px}.studioGateCard{padding:22px}}
+
+/* Visible Studio action; drag within the flight area or click to open. */
+.app .predictLauncher {
+    min-width: 126px;
+    min-height: 44px;
+    gap: 9px;
+    padding: 9px 12px;
+    border: 1px solid #bd3154;
+    border-top-color: #ff6489;
+    border-radius: 10px;
+    background: linear-gradient(145deg, #44202e, #211b26);
+    box-shadow: 0 4px 16px #0006, inset 0 1px #ffffff09;
+    color: #fff0f5;
+    cursor: grab;
+    touch-action: none;
+    user-select: none;
+    -webkit-user-select: none;
+}
+.app .predictLauncher img { width: 40px; pointer-events: none; }
+.app .predictLauncher > span { pointer-events: none; }
+.app .predictLauncher::after {
+    content: "";
+    width: 7px;
+    height: 13px;
+    margin-left: 2px;
+    opacity: .55;
+    background: radial-gradient(circle, #e4a4b7 1px, transparent 1.2px) 0 0 / 4px 4px;
+}
+.app .predictLauncher:hover { border-color: #f05c7c; background: #482333; }
+.app .predictLauncher[data-drag-pressed],
+.app .predictLauncher[data-dragging] { cursor: grabbing; border-color: #ff9ab3; background: #512437; }
+.app .predictLauncher:focus-visible { outline: 2px solid #ff9ab3; outline-offset: 3px; }
+@media (max-width: 420px) {
+    .app .predictLauncher { min-width: 116px; padding-inline: 10px; gap: 7px; }
+    .app .predictLauncher img { width: 34px; }
+}

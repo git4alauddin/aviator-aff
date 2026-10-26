@@ -2,7 +2,7 @@ import test from "node:test";
 import assert from "node:assert/strict";
 import {mountDraggableWidget} from "../js/draggable-widget.js";
 
-function fixture() {
+function fixture(options = {}) {
     const view = new EventTarget();
     Object.assign(view, {innerWidth: 390, innerHeight: 844});
     const viewport = new EventTarget();
@@ -21,7 +21,7 @@ function fixture() {
         releasePointerCapture: id => captures.delete(id),
         getBoundingClientRect: () => ({left: parseFloat(button.style.left) || 315, top: parseFloat(button.style.top) || 769, width: 58, height: 58}),
     });
-    const controller = mountDraggableWidget(button);
+    const controller = mountDraggableWidget(button, options);
     button.click = () => click(0);
     let opens = 0;
     button.addEventListener("click", () => opens++);
@@ -87,6 +87,27 @@ test("drag positions clamp at every edge and follow viewport resize and keyboard
     state.controller.destroy();
 });
 
+test("an embedded button uses parent coordinates and stays within resized bounds", () => {
+    const bounds = {left: 100, top: 200, width: 250, height: 300};
+    const state = fixture({boundsElement: {getBoundingClientRect: () => bounds}});
+    state.pointer('pointerdown', 344, 798);
+    state.pointer('pointermove', 200, 400);
+    assert.equal(state.button.style.left, '71px');
+    assert.equal(state.button.style.top, '171px');
+    state.pointer('pointermove', -500, -500);
+    assert.equal(state.button.style.left, '16px');
+    assert.equal(state.button.style.top, '16px');
+    state.pointer('pointermove', 2000, 2000);
+    state.pointer('pointerup', 2000, 2000);
+    assert.equal(state.button.style.left, '176px');
+    assert.equal(state.button.style.top, '226px');
+    Object.assign(bounds, {left: 300, top: 400, width: 180, height: 180});
+    state.view.dispatchEvent(new Event('resize'));
+    assert.equal(state.button.style.left, '16px');
+    assert.equal(state.button.style.top, '26px');
+    state.controller.destroy();
+});
+
 test("cancelled drags release capture and keyboard activation keeps working", () => {
     const state = fixture();
     state.pointer("pointerdown", 344, 798);
@@ -147,4 +168,3 @@ test("hidden, secondary, and disabled controls cannot drag; cleanup restores pos
     assert.equal(state.button.style.left, "");
     assert.equal(state.click().defaultPrevented, false);
 });
-

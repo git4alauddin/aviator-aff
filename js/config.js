@@ -15,10 +15,10 @@ export const config = Object.freeze({
     depositCurrency: "INR",
     copyCodeDemo: Object.freeze({
         heading: "Already deposited?",
-        caption: "Simulation only",
+        //caption: "Simulation only",
         buttonText: "Copy Code",
         loadingText: "Copying…",
-        completeText: "Demo complete",
+        completeText: "Complete",
     }),
     sequence: Object.freeze({
         fillMs: 1800,

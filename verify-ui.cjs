@@ -184,7 +184,7 @@ const delay = ms => new Promise(resolve => setTimeout(resolve, ms));
     assert.equal(await evaluate("document.querySelector('[data-copy-code-section]').hidden"),false);
     await evaluate("window.__clipboardWrites=0; Object.defineProperty(navigator,'clipboard',{configurable:true,value:{writeText(){window.__clipboardWrites++;return Promise.resolve();}}})");
     await click('[data-copy-code-demo]'); await evaluate('__advance(window.__time+600)');
-    assert.equal(await evaluate("document.querySelector('[data-copy-code-label]').textContent"),'Demo complete');
+    assert.equal(await evaluate("document.querySelector('[data-copy-code-label]').textContent"),await evaluate("import('./js/config.js').then(({config})=>config.copyCodeDemo.completeText)"));
     assert.equal(await evaluate('window.__clipboardWrites'),0);
     await click('[data-dismiss-deposit]'); await delay(25);
     await click('#predictLauncher');
@@ -233,16 +233,27 @@ const delay = ms => new Promise(resolve => setTimeout(resolve, ms));
     for(let i=0;i<100;i++) {if(await evaluate("!!document.getElementById('action0')")) break;await delay(50);}
     assert.equal(await evaluate("document.getElementById('studioGate').hidden"),true);
     assert.equal(await evaluate("document.getElementById('studioApp').inert"),false);
+    assert.equal(await evaluate("document.getElementById('predictLauncher').hasAttribute('data-draggable-floating')"),true);
+    const studioDrag = await evaluate("(() => {const r=document.getElementById('predictLauncher').getBoundingClientRect();return {x:r.x+r.width/2,y:r.y+r.height/2,left:r.left,top:r.top};})()");
+    await send('Input.dispatchMouseEvent',{type:'mouseMoved',x:studioDrag.x,y:studioDrag.y});
+    await send('Input.dispatchMouseEvent',{type:'mousePressed',x:studioDrag.x,y:studioDrag.y,button:'left',clickCount:1});
+    await send('Input.dispatchMouseEvent',{type:'mouseMoved',x:studioDrag.x-100,y:studioDrag.y+65,button:'left',buttons:1});
+    await send('Input.dispatchMouseEvent',{type:'mouseReleased',x:studioDrag.x-100,y:studioDrag.y+65,button:'left',clickCount:1});
+    assert.equal(await evaluate("document.getElementById('predictionDialog').open"),false,'Dragging must not open prediction');
+    assert.ok(await evaluate(`document.getElementById('predictLauncher').getBoundingClientRect().left < ${studioDrag.left-50}`));
+    await screenshot('studio-predict-button-mobile.png');
     await click('#predictLauncher');
     assert.equal(await evaluate("document.getElementById('predictPreview').hidden"),false);
     await click('#predictClose'); await delay(25);
     await send('Emulation.setDeviceMetricsOverride',{width:1440,height:1000,deviceScaleFactor:1,mobile:false});
-    assert.match(await evaluate("document.querySelector('.funMode').textContent"),/DEMO SIMULATION/);
+    assert.equal(await evaluate("document.querySelector('.funMode').textContent"),await evaluate('SIM_CONFIG.disclaimer.text'));
+    assert.equal(await evaluate("document.querySelector('.funMode').hidden"),await evaluate('SIM_CONFIG.disclaimer.enabled === false'));
     await click('#menuButton');
     assert.equal(await evaluate("new URL(document.querySelector('.studioBack').href).pathname"),'/registration.html');
     assert.equal((await fetch(siteUrl+'/.git/config')).status,404);
     assert.equal((await fetch(siteUrl+'/README.md')).status,404);
     assert.equal((await fetch(siteUrl+'/config.js')).status,200);
+    assert.equal((await fetch(siteUrl+'/studio-config.js')).status,200);
     console.log('PASS: Aviator landing handoff, registration, deposit and code flow, preset previews, Creator Studio navigation, 320px mobile layout, and private-file blocking. External iframe blocked in tests.');
 
     await send('Emulation.setDeviceMetricsOverride', { width: 1903, height: 1031, deviceScaleFactor: 1, mobile: false });
@@ -420,30 +431,43 @@ const delay = ms => new Promise(resolve => setTimeout(resolve, ms));
     assert.equal(await evaluate("document.activeElement.id"), 'predictLauncher');
     await send('Emulation.setEmulatedMedia', {features:[]});
 
-    // A config override is applied before app startup, as it would be in config.js.
+    // Studio-only config overrides apply before app startup.
     const overrides = await send('Page.addScriptToEvaluateOnNewDocument', {source:`
       Object.defineProperty(window,'SIM_CONFIG',{configurable:true,set(value){
+        value.disclaimer={enabled:true,text:'CREATOR PREVIEW',tooltip:'Custom Studio disclaimer'};
+        value.initialCredits=1234.5;
+        value.currency='INR';
+        value.crashPoints=[3.14,7.5];
         value.prediction={...value.prediction,accessCode:'',unlockDurationMs:0,unlockHoldMs:0,revealDurationMs:0,text:{widgetLabel:'PREVIEW'},adminContact:{text:'Support',url:'javascript:alert(1)'}};
         Object.defineProperty(window,'SIM_CONFIG',{value,writable:true,configurable:true});
       }});
     `});
     await open();
     await send('Page.removeScriptToEvaluateOnNewDocument', {identifier:overrides.identifier});
+    assert.equal(await wallet(),1234.5);
+    assert.equal(await evaluate("document.getElementById('currency').textContent"),'INR');
+    assert.equal(await evaluate("document.querySelector('.funMode').hidden"),false);
+    assert.equal(await evaluate("document.querySelector('.funMode').textContent"),'CREATOR PREVIEW');
+    assert.equal(await evaluate("document.querySelector('.funMode').title"),'Custom Studio disclaimer');
+    assert.equal(await evaluate("[...document.scripts].some(script=>script.src.endsWith('/config.js'))"),false);
     assert.equal(await evaluate("document.querySelector('#predictLauncher span').textContent"), 'PREVIEW');
     await click('#predictLauncher');
     assert.equal(await evaluate("document.getElementById('predictPreview').hidden"), false);
     assert.equal(await evaluate("document.getElementById('predictAdminLink').hidden"), true);
     await click('#predictRun');
-    assert.equal(await evaluate("document.getElementById('predictValue').textContent"), '1.24x');
+    assert.equal(await evaluate("document.getElementById('predictValue').textContent"), '3.14x');
     await click('#predictClose');
     const disabled = await send('Page.addScriptToEvaluateOnNewDocument', {source:`
       Object.defineProperty(window,'SIM_CONFIG',{configurable:true,set(value){
         value.prediction.enabled=false;
+        value.disclaimer.enabled=false;
         Object.defineProperty(window,'SIM_CONFIG',{value,writable:true,configurable:true});
       }});
     `});
     await open();
     await send('Page.removeScriptToEvaluateOnNewDocument', {identifier:disabled.identifier});
+    assert.equal(await evaluate("document.querySelector('.funMode').hidden"),true);
+    assert.equal(await evaluate("getComputedStyle(document.querySelector('.funMode')).display"),'none');
     await click('#predictLauncher');
     assert.equal(await evaluate("document.getElementById('predictLauncher').hidden"), true);
     assert.equal(await evaluate("document.getElementById('predictionDialog').open"), false);

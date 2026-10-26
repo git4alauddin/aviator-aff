@@ -2,6 +2,11 @@
   'use strict';
   const cfg = window.SIM_CONFIG;
   const $ = id => document.getElementById(id);
+  const banner = document.querySelector('.funMode');
+  const disclaimer = cfg.disclaimer || {};
+  banner.hidden = disclaimer.enabled === false;
+  if (typeof disclaimer.text === 'string') banner.textContent = disclaimer.text;
+  if (typeof disclaimer.tooltip === 'string') banner.title = disclaimer.tooltip;
   const fmt = value => Number(value).toFixed(2);
   const flight = new window.FlightRenderer($('flightSvg'), { ...cfg.flight, growthRate: cfg.growthRate });
   const panels = Array.from({ length: 2 }, () => ({ stake: 1, state: 'idle', cashMult: null, cashAmount: null, auto: false, autoCash: false, cashAt: 2 }));
@@ -234,6 +239,12 @@
       target: cfg.crashPoints[(sequence + Number(next)) % cfg.crashPoints.length],
     };
   }, { requireCode: false });
+  if (cfg.prediction?.enabled === true) {
+    const draggable = window.mountDraggableWidget($('predictLauncher'), {
+      boundsElement: document.querySelector('.flightStage'),
+    });
+    window.addEventListener('pagehide', () => draggable.destroy(), {once: true});
+  }
   function tick(now) { if (!paused) render(now); requestAnimationFrame(tick); }
   requestAnimationFrame(tick);
 })();

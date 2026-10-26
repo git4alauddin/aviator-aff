@@ -22,7 +22,7 @@
       <img class="studioGatePlane" src="assets/plane/plane-0.svg" alt="" width="150" height="74">
       <p class="studioGateEyebrow">CREATOR ACCESS</p>
       <h1 id="studioGateTitle">Creator Studio</h1>
-      <p class="studioGateHelp">Enter your creator password to open the recording simulation.</p>
+      <p class="studioGateHelp">Enter your creator password to open the Studio.</p>
       <form id="studioGateForm" novalidate>
         <label for="studioPassword">Creator password</label>
         <input id="studioPassword" name="creator-password" type="password" required maxlength="128" autocomplete="current-password" autocapitalize="none" spellcheck="false" aria-invalid="false" aria-describedby="studioGateError">
@@ -37,7 +37,7 @@
       <a class="brand" href="creator-studio.html" aria-label="Aviator Creator Studio">Aviator</a>
       <div class="topright">
         <span class="wallet" id="wallet"></span><span class="currency" id="currency"></span>
-        <button class="menuButton" id="menuButton" aria-label="Demo settings" aria-expanded="false" aria-controls="settings">☰</button>
+        <button class="menuButton" id="menuButton" aria-label="settings" aria-expanded="false" aria-controls="settings">☰</button>
       </div>
       <div class="settings" id="settings" hidden>
         <strong>Creator Studio</strong>
@@ -71,10 +71,10 @@
           <div class="historyPopover" id="historyPopover" hidden><strong>Round history</strong><div id="expandedHistory"></div></div>
         </div>
         <section class="arena" aria-label="Flight simulation">
-          <div class="funMode" title="Creator recording demo with virtual credits and predetermined outcomes">CREATOR STUDIO · DEMO SIMULATION</div>
+          <div class="funMode" title="Creator recording with virtual credits and predetermined outcomes">CREATOR STUDIO · DEMO SIMULATION</div>
           <div class="flightStage">
             <button class="predictLauncher" id="predictLauncher" type="button" hidden aria-label="Open Aviator prediction preview" aria-controls="predictionDialog" aria-haspopup="dialog" aria-expanded="false">
-              <img src="assets/plane/plane-0.svg" alt="" width="150" height="74">
+              <img src="assets/plane/plane-0.svg" alt="" width="150" height="74" draggable="false">
               <span data-predict-text="widgetLabel">PREDICT</span>
             </button>
             <svg id="flightSvg" viewBox="0 0 1000 500" preserveAspectRatio="none" aria-hidden="true"></svg>
@@ -128,14 +128,15 @@
         <span class="predictReady" id="predictReady" hidden>✓ PREVIEW READY</span>
       </div>
       <button class="predictAction" id="predictRun" type="button">Predict</button>
-      <p class="predictStatus" id="predictStatus" role="status">Select Predict to reveal this demo round.</p>
-      <p class="predictDisclosure" id="predictDisclosure">Preset simulation · No live game data</p>
+      <p class="predictStatus" id="predictStatus" role="status">Select Predict to reveal this round.</p>
+<!--      <p class="predictDisclosure" id="predictDisclosure">Preset simulation · No live game data</p>-->
     </section>
-    <footer class="predictFooter">LOCAL DEMO <span>VIRTUAL CREDITS ONLY</span></footer>
+<!--    <footer class="predictFooter">LOCAL DEMO <span>VIRTUAL CREDITS ONLY</span></footer>-->
   </dialog>
-  <script src="config.js"></script>
+  <script src="studio-config.js"></script>
   <script src="flight.js"></script>
   <script src="prediction.js"></script>
+  <script src="js/draggable-widget-core.js"></script>
   <script src="js/studio-access.js"></script>
 </body>
 </html>

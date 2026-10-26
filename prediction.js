@@ -12,7 +12,7 @@
       widgetLabel: 'PREDICT', terminalLabel: 'FLIGHT DECK', entryTitle: 'Enter access code',
       entryHelp: 'Enter your code to open the Aviator preview.',
       unlockButton: 'Unlock', predictButton: 'Predict',
-      predictAgainButton: 'Predict again', resultLabel: 'Preset crash multiplier',
+      predictAgainButton: 'Predict again', resultLabel: 'crash multiplier',
     };
     for (const key of Object.keys(text)) {
       if (typeof settings.text?.[key] === 'string') text[key] = settings.text[key];
@@ -102,7 +102,7 @@
       progress(0);
     }
 
-    function resetResult(message = 'Select Predict to reveal this demo round.') {
+    function resetResult(message = 'Select Predict to reveal this round.') {
       state = 'ready'; selected = null;
       setValue('—');
       $('predictValue').setAttribute('aria-hidden', 'false');
@@ -111,7 +111,7 @@
       scan(0);
       $('predictRun').disabled = !Number.isFinite(round?.target) || round.target < 1;
       $('predictRun').textContent = text.predictButton;
-      $('predictStatus').textContent = $('predictRun').disabled ? 'No preset is available for this round.' : message;
+      $('predictStatus').textContent = $('predictRun').disabled ? 'No prediction is available for this round.' : message;
     }
 
     function syncRound() {
@@ -121,7 +121,7 @@
       round = latest;
       if (changed) $('predictRoundLabel').textContent = `Round ${round.id}`;
       if (changed || phaseChanged) $('predictRoundPhase').textContent = round.phase === 'flying' ? 'In flight' : 'Upcoming';
-      if (changed) resetResult('Round updated. Select Predict for this demo round.');
+      if (changed) resetResult('Round updated. Select Predict for this round.');
     }
 
     function finishCheck() {
@@ -164,7 +164,7 @@
       $('predictReady').hidden = false;
       $('predictRun').disabled = false;
       $('predictRun').textContent = text.predictAgainButton;
-      $('predictStatus').textContent = `Round ${selected.id} · Configured demo crash: ${selected.target.toFixed(2)}x.`;
+      $('predictStatus').textContent = `Round ${selected.id} · Configured crash: ${selected.target.toFixed(2)}x.`;
     }
 
     function watch(now, run) {

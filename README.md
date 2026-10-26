@@ -54,15 +54,26 @@ iframe or live game. Creator Studio requires its separate entry password from
 `SIM_CONFIG.studio.accessCode`, then opens its prediction panel directly and
 follows its own simulation rounds. This is a simple browser-side entry gate.
 Visitor access still requires its own code. Activity
-is visibly labeled fictional sample data. Studio recordings retain a visible
-**CREATOR STUDIO · DEMO SIMULATION** banner.
+is visibly labeled fictional sample data. The golden Studio disclaimer bar is
+enabled by default and configured in `studio-config.js`.
 
 - `js/config.js`: referral/wallet URLs, deposit amount/currency, promotional and
   landing timing, activity interval, Creator Studio link, site URL, voice settings.
   The reference's URLs and ₹1,000 configured minimum are retained.
-- `config.js`: preset multipliers, simulation timing/credits, flight appearance,
-  prediction code, selected labels, contact, and reveal timing. The copy simulation
-  does not use or display the access code.
+- `config.js`: visitor prediction presets, access code, labels, contact, and timing.
+  The copy simulation does not use or display the access code.
+- `studio-config.js`: Studio presets, countdown/crash timing, multiplier growth,
+  flight appearance, starting balance, currency, history, existing Studio password,
+  disclaimer bar, and Studio prediction settings. Studio loads only this file;
+  its settings are independent of the visitor popup.
+
+For the golden bar, change `disclaimer.enabled` to show/hide it, `disclaimer.text`
+for its message, and `disclaimer.tooltip` for its hover description. Set
+`prediction.enabled` to show/hide Studio PREDICT and `prediction.revealDurationMs`
+for the scan duration. Reload Studio after editing. Its entry password stays
+`@creator`; prediction inside Studio still opens directly without another password.
+The Studio PREDICT button starts at the flight area's upper right. Drag it with
+mouse or touch to reposition it within that area; a click or tap opens prediction.
 
 Voice is enabled using `assets/audio/aviator_guide.mp3`.
 Change `guidance.src` in `js/config.js` for another filename, or set
