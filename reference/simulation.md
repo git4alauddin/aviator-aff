@@ -36,7 +36,7 @@ Open index.html in Chrome, Edge, Firefox, or Safari. No server, installation, or
 | assets/plane/ | Four original plane SVG frames from the official public demo |
 | config.js | Predetermined results, timing, virtual starting balance, and drawing options |
 
-The display unit defaults to USD to match the reference; it labels virtual credits. The starting balance is 29,999.00. Changing these values never connects the demo to real payments.
+Studio now defaults to INR with Indian digit grouping and a virtual starting balance of ₹29,999.00. Quick bets are ₹10, ₹100, ₹500, and ₹1,000; Studio settings are in studio-config.js. These are display amounts, not a foreign-exchange conversion or a connection to real payments. The original animation reference was measured with the public demo's USD display.
 
 ## Prediction preview configuration
 

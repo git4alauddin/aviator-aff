@@ -22,6 +22,7 @@ test('bets arrive during countdown, retain identity, and stop joining at takeoff
   assert.ok(initial > 0 && middle > initial && rows.length > middle);
   assert.ok(rows.length >= 120 && rows.length <= 210);
   assert.equal(new Set(rows.map(row => row.profile.id)).size, rows.length);
+  assert.ok(rows.every(row => /^\d\*{3}\d{3}$/.test(row.profile.name)), 'Masked player IDs start with digits');
   assert.ok(new Set(rows.map(row => row.stakeCents)).size > 12);
   assert.ok(rows.every(row => row.stakeCents >= 100 && row.stakeCents <= 250000));
   const revision = activity.current.revision;

@@ -16,11 +16,10 @@
       this.spectators = range(settings.spectators, {min: 90, max: 260}, 0, 100000);
       this.returningShare = clamp(finite(settings.returningShare, .65), 0, 1);
       this.refreshMs = clamp(finite(settings.refreshMs, 200), 100, 2000);
-      const letters = 'samrkndjavpbcth';
       const offset = this.integer(0, 899);
       this.profiles = Array.from({length: Math.ceil(this.players.max) * 3}, (_, index) => ({
         id: index + 1,
-        name: `${letters[this.integer(0, letters.length - 1)]}***${100 + (offset + index * 137) % 900}`,
+        name: `${this.integer(1, 9)}***${100 + (offset + index * 137) % 900}`,
         icon: this.integer(0, 9),
         photo: this.random() < .6,
         risk: this.random(),

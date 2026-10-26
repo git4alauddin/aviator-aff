@@ -81,7 +81,7 @@ const delay = ms => new Promise(resolve => setTimeout(resolve, ms));
     };
     const click = selector => evaluate(`document.querySelector(${JSON.stringify(selector)}).click()`);
     const change = (selector, value) => evaluate(`(() => { const el = document.querySelector(${JSON.stringify(selector)}); el.value = ${JSON.stringify(value)}; el.dispatchEvent(new Event('change', { bubbles: true })); })()`);
-    const wallet = () => evaluate("Number(document.getElementById('wallet').textContent.replaceAll(',', ''))");
+    const wallet = () => evaluate("Number(document.getElementById('wallet').textContent.replace(/[^0-9.-]/g, ''))");
     const screenshot = async (name, fullPage = false) => {
       await evaluate('document.getAnimations().forEach(animation => { if (Number.isFinite(animation.effect.getComputedTiming().endTime)) animation.finish(); else animation.pause(); })');
       await delay(60); // Allow viewport changes and the themed layers to paint.
@@ -259,16 +259,31 @@ const delay = ms => new Promise(resolve => setTimeout(resolve, ms));
     await send('Emulation.setDeviceMetricsOverride', { width: 1903, height: 1031, deviceScaleFactor: 1, mobile: false });
     await open();
     assert.equal(await wallet(), 29999);
-    await change('#stake0', '5'); await click('#action0');
-    assert.equal(await wallet(), 29994);
+    assert.equal(await evaluate("document.getElementById('currency').textContent"),'INR');
+    assert.equal(await evaluate("document.getElementById('wallet').textContent"),'₹29,999.00');
+    assert.equal(await evaluate("document.getElementById('stake0').value"),'10.00');
+    assert.deepEqual(await evaluate("[...document.querySelectorAll('#panel0 [data-set]')].map(button=>button.textContent)"),['₹10','₹100','₹500','₹1,000']);
+    for (const amount of [10,100,500,1000]) {
+      await click(`#panel0 [data-set="${amount}"]`);
+      assert.equal(await evaluate("Number(document.getElementById('stake0').value)"),amount);
+    }
+    await click('#panel0 [data-adjust="1"]');
+    assert.equal(await evaluate("document.getElementById('stake0').value"),'1010.00');
+    await click('#panel0 [data-adjust="-1"]');
+    assert.equal(await evaluate("document.getElementById('stake0').value"),'1000.00');
+    await change('#stake0','1');
+    assert.equal(await evaluate("document.getElementById('stake0').value"),'10.00');
+    assert.ok(await evaluate("[...document.querySelectorAll('#betrows .player')].every(player=>/^\\d/.test(player.textContent.trim()))"));
+    await change('#stake0', '50'); await click('#action0');
+    assert.equal(await wallet(), 29949);
     assert.equal(await evaluate("document.getElementById('stake0').disabled"), true);
     await change('#stake0', '999');
-    assert.equal(await evaluate("document.getElementById('stake0').value"), '5.00');
+    assert.equal(await evaluate("document.getElementById('stake0').value"), '50.00');
     await click('#action0'); assert.equal(await wallet(), 29999);
 
     await evaluate('SIM_CONFIG.crashPoints[0] = 2.56; __advance(4000); __advance(4000 + Math.log(1.47) / SIM_CONFIG.growthRate * 1000)');
     assert.equal(await evaluate("document.querySelector('.mult').textContent"), '1.47x');
-    await change('#stake0', '1');
+    await change('#stake0', '10');
     await screenshot('desktop.png');
     const desktop = await evaluate(`(() => { const box = el => { const r = el.getBoundingClientRect(); return {x:r.x,y:r.y,width:r.width,height:r.height}; }; return { viewport:[innerWidth,innerHeight], page:[document.documentElement.scrollWidth,document.documentElement.scrollHeight], arena:box(document.querySelector('.arena')), sidebar:box(document.querySelector('.bets')), controls:box(document.querySelector('.controlRow')) }; })()`);
     assert.equal(desktop.page[0], 1903); assert.equal(desktop.page[1], 1031);
@@ -298,8 +313,8 @@ const delay = ms => new Promise(resolve => setTimeout(resolve, ms));
     assert.equal(reducedBlade,'0');
     assert.equal(await evaluate("getComputedStyle(document.querySelector('.flightStage'), '::before').backgroundImage"), reducedBackground);
     await send('Emulation.setEmulatedMedia', { features: [] });
-    await change('#stake0', '5');
-    await click('#action0'); assert.equal(await wallet(), 29994); // Queued next-round stake.
+    await change('#stake0', '50');
+    await click('#action0'); assert.equal(await wallet(), 29949); // Queued next-round stake.
     await click('#action0'); assert.equal(await wallet(), 29999);
     await click('#historyButton'); assert.equal(await evaluate("document.getElementById('historyPopover').hidden"), false);
     await click('#tab-top'); assert.equal(await evaluate("document.getElementById('tab-top').getAttribute('aria-selected')"), 'true');
@@ -307,18 +322,18 @@ const delay = ms => new Promise(resolve => setTimeout(resolve, ms));
 
     // Independent placement, automatic cash out, manual cash out, and crash settlement.
     await open();
-    await change('#stake0', '5'); await click('#action0');
-    await change('#stake1', '2'); await click('#action1');
+    await change('#stake0', '50'); await click('#action0');
+    await change('#stake1', '20'); await click('#action1');
     await click('[data-mode="auto"][data-panel="1"]');
     await click('#autoCash1'); await change('#cashAt1', '1.10');
     await evaluate('__advance(4000); __advance(6000)');
     assert.match(await evaluate("document.getElementById('action1').textContent"), /Cashed out/);
-    assert.equal(await evaluate("document.querySelector('.winPrize strong').textContent"), '2.20');
+    assert.equal(await evaluate("document.querySelector('.winPrize strong').textContent"), '22.00');
     assert.equal(await evaluate("document.querySelector('.winMessage strong').textContent"), '1.10x');
-    assert.equal(await wallet(), 29994.2);
-    await click('#action0'); assert.equal(await wallet(), 30000);
+    assert.equal(await wallet(), 29951);
+    await click('#action0'); assert.equal(await wallet(), 30009);
     assert.equal(await evaluate("document.querySelectorAll('.winNotification').length"), 2);
-    assert.equal(await evaluate("document.querySelector('.winNotification:last-child .winPrize strong').textContent"), '5.80');
+    assert.equal(await evaluate("document.querySelector('.winNotification:last-child .winPrize strong').textContent"), '58.00');
     await evaluate('__advance(7000); __advance(7001)');
     assert.match(await evaluate("document.getElementById('status').textContent"), /FLEW AWAY/);
     assert.equal(await evaluate("document.querySelector('#history .pill').textContent"), '1.24x');
@@ -326,7 +341,7 @@ const delay = ms => new Promise(resolve => setTimeout(resolve, ms));
     // Pause freezes the multiplier; skipping refunds unsettled stakes.
     await click('#menuButton'); await click('#next'); await click('#action0');
     const beforeRefund = await wallet();
-    await click('#next'); assert.equal(await wallet(), beforeRefund + 5);
+    await click('#next'); assert.equal(await wallet(), beforeRefund + 50);
     await click('#pause');
     const frozen = await evaluate("document.getElementById('status').textContent");
     await evaluate('__advance(15000)');
@@ -351,7 +366,10 @@ const delay = ms => new Promise(resolve => setTimeout(resolve, ms));
     await send('Emulation.setDeviceMetricsOverride', { width: 390, height: 844, deviceScaleFactor: 1, mobile: true });
     await open();
     await evaluate('SIM_CONFIG.crashPoints[0] = 2.56; __advance(4000); __advance(9000)');
+    await click('#panel0 [data-set="1000"]');
     await screenshot('mobile.png');
+    assert.ok(await evaluate("document.getElementById('stake0').clientWidth >= 70"),'Mobile stake field must show the full INR value');
+    assert.ok(await evaluate("(() => {const amount=document.querySelector('#action0 .actionAmount'),button=document.getElementById('action0');return amount.getBoundingClientRect().width<=button.clientWidth-8;})()"),'INR amount must fit the mobile action button');
     const mobile = await evaluate(`({ width:innerWidth, scroll:document.documentElement.scrollWidth, actions:[...document.querySelectorAll('.action')].map(el => { const r=el.getBoundingClientRect(); return {x:r.x,right:r.right,width:r.width}; }) })`);
     assert.equal(mobile.scroll, 390);
     mobile.actions.forEach(box => { assert.ok(box.x >= 0 && box.right <= 390 && box.width > 60); });
@@ -435,7 +453,7 @@ const delay = ms => new Promise(resolve => setTimeout(resolve, ms));
     const overrides = await send('Page.addScriptToEvaluateOnNewDocument', {source:`
       Object.defineProperty(window,'SIM_CONFIG',{configurable:true,set(value){
         value.disclaimer={enabled:true,text:'CREATOR PREVIEW',tooltip:'Custom Studio disclaimer'};
-        value.initialCredits=1234.5;
+        value.initialCredits=1234567.89;
         value.currency='INR';
         value.crashPoints=[3.14,7.5];
         value.prediction={...value.prediction,accessCode:'',unlockDurationMs:0,unlockHoldMs:0,revealDurationMs:0,text:{widgetLabel:'PREVIEW'},adminContact:{text:'Support',url:'javascript:alert(1)'}};
@@ -444,7 +462,8 @@ const delay = ms => new Promise(resolve => setTimeout(resolve, ms));
     `});
     await open();
     await send('Page.removeScriptToEvaluateOnNewDocument', {identifier:overrides.identifier});
-    assert.equal(await wallet(),1234.5);
+    assert.equal(await wallet(),1234567.89);
+    assert.equal(await evaluate("document.getElementById('wallet').textContent"),'₹12,34,567.89');
     assert.equal(await evaluate("document.getElementById('currency').textContent"),'INR');
     assert.equal(await evaluate("document.querySelector('.funMode').hidden"),false);
     assert.equal(await evaluate("document.querySelector('.funMode').textContent"),'CREATOR PREVIEW');

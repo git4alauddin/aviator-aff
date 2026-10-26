@@ -8,21 +8,26 @@
   if (typeof disclaimer.text === 'string') banner.textContent = disclaimer.text;
   if (typeof disclaimer.tooltip === 'string') banner.title = disclaimer.tooltip;
   const fmt = value => Number(value).toFixed(2);
+  const betting = {defaultStake: 10, minStake: 10, maxStake: 100000, step: 10, presets: [10, 100, 500, 1000], ...cfg.betting};
+  const stakeValue = value => Number.isFinite(Number(value)) ? Math.min(betting.maxStake, Math.max(betting.minStake, Math.round(Number(value) * 100) / 100)) : betting.defaultStake;
+  const locale = cfg.locale || (cfg.currency === 'INR' ? 'en-IN' : 'en-US');
+  const money = new Intl.NumberFormat(locale, {minimumFractionDigits: 2, maximumFractionDigits: 2});
+  const currencyMoney = new Intl.NumberFormat(locale, {style: 'currency', currency: cfg.currency, minimumFractionDigits: 2, maximumFractionDigits: 2});
+  const currencySymbol = currencyMoney.formatToParts(0).find(part => part.type === 'currency').value;
+  const presetMoney = new Intl.NumberFormat(locale, {style: 'currency', currency: cfg.currency, minimumFractionDigits: 0, maximumFractionDigits: 2});
   const flight = new window.FlightRenderer($('flightSvg'), { ...cfg.flight, growthRate: cfg.growthRate });
-  const panels = Array.from({ length: 2 }, () => ({ stake: 1, state: 'idle', cashMult: null, cashAmount: null, auto: false, autoCash: false, cashAt: 2 }));
+  const panels = Array.from({ length: 2 }, () => ({ stake: stakeValue(betting.defaultStake), state: 'idle', cashMult: null, cashAmount: null, auto: false, autoCash: false, cashAt: 2 }));
   let sequence = 0, phase = 'waiting', phaseStart = performance.now();
   let roundId = 1;
   let paused = false, pausedAt = 0, multiplier = 1, balance = cfg.initialCredits;
   let history = [...cfg.initialHistory], activeTab = 'all';
   const activity = new window.StudioActivity(cfg.activity);
   const rowNodes = new Map();
-  const money = new Intl.NumberFormat('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2});
   let rowContext = '', leaderKey = '';
   let lastRowsUpdate = -1, toastTimer;
   const duration = point => Math.log(Math.max(1.001, point)) / cfg.growthRate * 1000;
   const colorClass = n => n >= 10 ? 'high' : n >= 2 ? 'mid' : '';
   const locked = b => b.state === 'placed' || b.state === 'queued';
-  const stakeValue = value => Number.isFinite(Number(value)) ? Math.min(100000, Math.max(.1, Math.round(Number(value) * 100) / 100)) : 1;
 
   function avatar(index) {
     const palettes = [['#203c52','#ba8c68','#171c28'],['#4b294d','#d49367','#161323'],['#44706f','#d4b38a','#c7b7a0'],['#ddb222','#ffda56','#e8960a'],['#294b60','#b8d4dd','#6e91a7'],['#692d28','#e62b27','#171a20'],['#5390a4','#ddd4b9','#dd5b3b'],['#658c2f','#f5c445','#c94a31']];
@@ -47,7 +52,7 @@
     notification.className = 'winNotification';
     notification.setAttribute('role', 'status');
     const stars = '<svg class="winStars" viewBox="0 0 112 38" aria-hidden="true"><path d="m13 4 2 4 4 .6-3 3 .7 4-3.7-2-3.7 2 .7-4-3-3 4-.6Z M8 17l1.4 2.8 3.1.5-2.3 2.2.5 3.1L8 24.2l-2.7 1.4.5-3.1-2.3-2.2 3.1-.5Z M99 4l2 4 4 .6-3 3 .7 4-3.7-2-3.7 2 .7-4-3-3 4-.6Z M104 17l1.4 2.8 3.1.5-2.3 2.2.5 3.1-2.7-1.4-2.7 1.4.5-3.1-2.3-2.2 3.1-.5Z"/></svg>';
-    notification.innerHTML = `<div class="winMessage"><span>You have cashed out!</span><strong>${fmt(at)}x</strong></div><div class="winPrize">${stars}<span>Win ${cfg.currency}</span><strong>${fmt(amount)}</strong></div><button class="winClose" aria-label="Dismiss cash-out notification">×</button>`;
+    notification.innerHTML = `<div class="winMessage"><span>You have cashed out!</span><strong>${fmt(at)}x</strong></div><div class="winPrize">${stars}<span>Win ${currencySymbol}</span><strong>${money.format(amount)}</strong></div><button class="winClose" aria-label="Dismiss cash-out notification">×</button>`;
     let timer;
     const dismiss = () => { clearTimeout(timer); notification.remove(); };
     notification.querySelector('button').addEventListener('click', dismiss);
@@ -116,18 +121,19 @@
   }
 
   function updateWallet() {
-    $('wallet').textContent = balance.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    $('wallet').textContent = currencyMoney.format(balance);
+    $('wallet').setAttribute('aria-label', `Virtual balance: ${currencyMoney.format(balance)}`);
     $('currency').textContent = cfg.currency;
-    document.querySelectorAll('.unit').forEach(el => { el.textContent = cfg.currency; });
+    document.querySelectorAll('.unit').forEach(el => { el.textContent = currencySymbol; });
   }
 
   function updateControls() {
     panels.forEach((b, i) => {
       const button = $('action' + i);
-      let style = '', label = `Bet<br>${fmt(b.stake)} <small>${cfg.currency}</small>`;
+      let style = '', label = `Bet<br><span class="actionAmount">${currencyMoney.format(b.stake)}</span>`;
       button.disabled = false;
-      if (b.state === 'cashed') { style = 'settled'; label = `Cashed out<br>${fmt(b.cashAmount)} <small>${cfg.currency}</small>`; button.disabled = true; }
-      else if (phase === 'flying' && b.state === 'placed') { style = 'cash'; label = `Cash Out<br>${fmt(b.stake * Number(fmt(multiplier)))} <small>${cfg.currency}</small>`; }
+      if (b.state === 'cashed') { style = 'settled'; label = `Cashed out<br><span class="actionAmount">${currencyMoney.format(b.cashAmount)}</span>`; button.disabled = true; }
+      else if (phase === 'flying' && b.state === 'placed') { style = 'cash'; label = `Cash Out<br><span class="actionAmount">${currencyMoney.format(b.stake * Number(fmt(multiplier)))}</span>`; }
       else if (locked(b)) { style = 'pending'; label = `Cancel<br><small>${b.state === 'queued' ? 'Next round' : 'Bet placed'}</small>`; }
       else if (b.state === 'lost') { style = 'settled'; label = `Flew away<br><small>Next round soon</small>`; button.disabled = true; }
       button.className = `action ${style}`;
@@ -143,8 +149,8 @@
   function buildControls() {
     $('controlRow').innerHTML = panels.map((b, i) => `<section class="betPanel" id="panel${i}" aria-label="Virtual bet panel ${i + 1}">
       <div class="seg" aria-label="Bet mode"><button class="selected" data-mode="bet" data-panel="${i}" aria-pressed="true">Bet</button><button data-mode="auto" data-panel="${i}" aria-pressed="false">Auto</button></div>
-      <div class="betBody"><div class="stake"><div class="number"><button data-adjust="-1" data-panel="${i}" aria-label="Decrease stake ${i + 1}">−</button><input id="stake${i}" type="number" min="0.10" max="100000" step="0.10" value="1.00" aria-label="Virtual stake panel ${i + 1}"><button data-adjust="1" data-panel="${i}" aria-label="Increase stake ${i + 1}">+</button></div>
-      <div class="presets">${[1,2,5,10].map(n => `<button data-set="${n}" data-panel="${i}">${n}</button>`).join('')}</div></div><button class="action" id="action${i}" data-action="${i}"></button></div>
+      <div class="betBody"><div class="stake"><div class="number"><button data-adjust="-1" data-panel="${i}" aria-label="Decrease stake ${i + 1} by ${presetMoney.format(betting.step)}">−</button><span class="stakeCurrency" aria-hidden="true">${currencySymbol}</span><input id="stake${i}" type="number" min="${betting.minStake}" max="${betting.maxStake}" step="1" value="${fmt(b.stake)}" aria-label="Virtual stake panel ${i + 1} in ${cfg.currency}"><button data-adjust="1" data-panel="${i}" aria-label="Increase stake ${i + 1} by ${presetMoney.format(betting.step)}">+</button></div>
+      <div class="presets">${betting.presets.map(n => `<button data-set="${n}" data-panel="${i}">${presetMoney.format(n)}</button>`).join('')}</div></div><button class="action" id="action${i}" data-action="${i}"></button></div>
       <div class="autoOptions" id="autoOptions${i}" hidden><label><input type="checkbox" id="autoBet${i}">Auto bet</label><label><input type="checkbox" id="autoCash${i}">Auto cash out</label><input type="number" id="cashAt${i}" min="1.01" step="0.01" max="1000" value="2.00" aria-label="Auto cash out multiplier panel ${i + 1}"></div>
     </section>`).join('');
     $('controlRow').addEventListener('click', event => {
@@ -160,8 +166,8 @@
         return;
       }
       if (locked(b)) return;
-      if ('set' in t.dataset) b.stake = Number(t.dataset.set);
-      if ('adjust' in t.dataset) b.stake = stakeValue(b.stake + Number(t.dataset.adjust));
+      if ('set' in t.dataset) b.stake = stakeValue(t.dataset.set);
+      if ('adjust' in t.dataset) b.stake = stakeValue(b.stake + Number(t.dataset.adjust) * betting.step);
       updateControls();
     });
     $('controlRow').addEventListener('change', event => {

@@ -60,3 +60,25 @@
 @keyframes studio-bet-join { from { opacity: .35; } to { opacity: 1; } }
 @keyframes studio-cashout { from { background-color: #456a18; } to { background-color: #203608; } }
 @media (prefers-reduced-motion: reduce) { .betrow, .betrow.paid { animation: none; } }
+
+/* INR values keep their grouping and symbol together on both bet panels. */
+.app .number input { width: 0; min-width: 0; flex: 1; font-variant-numeric: tabular-nums; }
+.stakeCurrency { flex: 0 0 auto; color: #969da7; font-size: 12px; margin-left: 3px; }
+.app .presets button { font-size: 11px; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.actionAmount { white-space: nowrap; font-variant-numeric: tabular-nums; font-size: .9em; }
+.wallet { font-variant-numeric: tabular-nums; white-space: nowrap; }
+@media (max-width: 420px) { .stakeCurrency { font-size: 10px; margin-left: 2px; } }
+@media (max-width: 760px) {
+    .app .main { grid-template-rows: 32px clamp(300px, 54dvh, 570px) 190px; }
+    .app .main:has(.betPanel.autoMode) { grid-template-rows: 32px clamp(300px, 54dvh, 570px) 240px; }
+    .app .betPanel { padding: 8px; }
+    .app .betBody { flex-direction: column; width: 100%; gap: 7px; margin-top: 9px; }
+    .app .betPanel.autoMode .betBody { margin-top: 9px; }
+    .app .stake { width: 100%; }
+    .app .number { height: 29px; padding: 3px 5px; }
+    .app .number input { font-size: 15px; }
+    .app .presets { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 3px; margin-top: 3px; }
+    .app .presets button { height: 21px; font-size: 9px; padding: 0; }
+    .app .action { flex: 0 0 auto; width: 100%; height: 57px; min-height: 57px; font-size: 18px; padding: 4px; }
+    .app .autoOptions { margin-top: 8px; }
+}

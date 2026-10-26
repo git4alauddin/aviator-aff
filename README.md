@@ -72,6 +72,10 @@ for its message, and `disclaimer.tooltip` for its hover description. Set
 `prediction.enabled` to show/hide Studio PREDICT and `prediction.revealDurationMs`
 for the scan duration. Reload Studio after editing. Its entry password stays
 `@creator`; prediction inside Studio still opens directly without another password.
+Studio defaults to INR and `en-IN` grouping, with rupee symbols on the balance,
+stake controls, quick bets, and cash-out displays. `betting` controls the default
+and minimum stake (₹10), maximum, +/- increment (₹10), and the quick-bet presets
+(₹10, ₹100, ₹500, ₹1,000). The starting balance is ₹29,999.00 in virtual credits.
 The Studio PREDICT button starts at the flight area's upper right. Drag it with
 mouse or touch to reposition it within that area; a click or tap opens prediction.
 
@@ -79,9 +83,10 @@ mouse or touch to reposition it within that area; a click or tap opens predictio
 `players.min/max` sets the number of bets per round, `stakes.min/max` the virtual
 stake range, `spectators.min/max` the spectator range, and `returningShare` the
 share drawn from the last round's player identities. `refreshMs` sets the update
-cadence. Players join during the countdown; their individual cash-out intentions
-are sampled independently of the crash multiplier. Unsettled bets lose at crash.
-Row payouts and the total use rounded integer cents, and the counter shows
+cadence. Players keep stable numeric masked IDs such as `7***284` and join during
+the countdown. Their individual cash-out intentions are sampled independently
+of the crash multiplier. Unsettled bets lose at crash.
+Row payouts and the total use rounded minor units (paise for INR), and the counter shows
 cashed-out / placed bets. Previous retains the completed round; Top ranks actual
 simulated cash-outs by payout. These settings do not affect the creator's balance
 or the visitor site, and the existing simulation labels remain in place.
