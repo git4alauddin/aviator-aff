@@ -22,12 +22,20 @@ globalThis.SIM_CONFIG = {
   initialCredits: 29999,
   initialHistory: [2.19, 1.87, 1.08, 1.20, 3.44, 2.93, 1.18, 1.27, 2.61, 1.30, 2.12, 1.26, 1.74, 1.04, 1.18, 1.00, 1.00, 1.02, 1.60, 1.76, 1.30, 5.99, 1.04, 1.03, 3.34, 1.18, 2.34, 1.42, 4.23, 1.08],
   maxDisplayedHistory: 30,
+  // Synthetic player activity; amounts use the display currency above.
+  activity: {
+    players: {min: 120, max: 210},   // Bets per round; join during the countdown.
+    stakes: {min: 1, max: 2500},
+    spectators: {min: 90, max: 260},
+    returningShare: 0.65,           // Returning identities from the last round.
+    refreshMs: 200,
+  },
   studio: {
     accessCode: '@creator',     // Existing browser-side entry gate.
   },
   // The golden bar above the flight area.
   disclaimer: {
-    enabled: true,              // false hides the bar.
+    enabled: false,              // false hides the bar.
     text: 'CREATOR STUDIO · SIMULATION',
     tooltip: 'Creator recording with virtual credits and predetermined outcomes',
   },

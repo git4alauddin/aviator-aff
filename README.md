@@ -75,6 +75,17 @@ for the scan duration. Reload Studio after editing. Its entry password stays
 The Studio PREDICT button starts at the flight area's upper right. Drag it with
 mouse or touch to reposition it within that area; a click or tap opens prediction.
 
+`studio-config.js` also controls synthetic player activity through `activity`:
+`players.min/max` sets the number of bets per round, `stakes.min/max` the virtual
+stake range, `spectators.min/max` the spectator range, and `returningShare` the
+share drawn from the last round's player identities. `refreshMs` sets the update
+cadence. Players join during the countdown; their individual cash-out intentions
+are sampled independently of the crash multiplier. Unsettled bets lose at crash.
+Row payouts and the total use rounded integer cents, and the counter shows
+cashed-out / placed bets. Previous retains the completed round; Top ranks actual
+simulated cash-outs by payout. These settings do not affect the creator's balance
+or the visitor site, and the existing simulation labels remain in place.
+
 Voice is enabled using `assets/audio/aviator_guide.mp3`.
 Change `guidance.src` in `js/config.js` for another filename, or set
 `guidance.enabled: false` to disable it. Close or Claim starts

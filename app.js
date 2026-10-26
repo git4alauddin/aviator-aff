@@ -13,7 +13,11 @@
   let sequence = 0, phase = 'waiting', phaseStart = performance.now();
   let roundId = 1;
   let paused = false, pausedAt = 0, multiplier = 1, balance = cfg.initialCredits;
-  let history = [...cfg.initialHistory], activeTab = 'all', previousRows = [], liveRows = [];
+  let history = [...cfg.initialHistory], activeTab = 'all';
+  const activity = new window.StudioActivity(cfg.activity);
+  const rowNodes = new Map();
+  const money = new Intl.NumberFormat('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+  let rowContext = '', leaderKey = '';
   let lastRowsUpdate = -1, toastTimer;
   const duration = point => Math.log(Math.max(1.001, point)) / cfg.growthRate * 1000;
   const colorClass = n => n >= 10 ? 'high' : n >= 2 ? 'mid' : '';
@@ -59,19 +63,56 @@
     $('expandedHistory').innerHTML = history.map(n => `<span class="pill ${colorClass(n)}">${fmt(n)}x</span>`).join('');
   }
 
-  function makeRows() {
-    const icons = [0,1,1,2,2,3,4,3,6,6,7,0,0,4,4,5,5,7,7,7,5,5,2,0,1,4,3,5];
-    return icons.map((icon, i) => ({ icon, name: `d***${[8,0,0,1,1,3,6,3,0,0,4,0,0,3,3,9,9,4,8,8,3,3][i % 22]}`, stake: 100, at: i === 3 ? 1.33 : 1.6 + ((i * 17 + sequence * 11) % 260) / 100, paid: false }));
+  function playerAvatar(profile) {
+    if (!profile.photo) return avatar(profile.icon);
+    const file = profile.icon === 0 ? 'img.png' : `img_${profile.icon}.png`;
+    return `<span class="avatar" aria-hidden="true"><img src="assets/images/avatars/${file}" alt="" width="25" height="25" draggable="false"></span>`;
   }
 
   function renderRows() {
-    let rows = activeTab === 'previous' ? previousRows : liveRows;
-    if (activeTab === 'top') rows = [...liveRows].sort((a, b) => (b.paid ? b.stake * b.at : 0) - (a.paid ? a.stake * a.at : 0));
-    $('betrows').innerHTML = rows.length ? rows.map(row => `<div class="betrow ${row.paid ? 'paid' : ''}"><span class="player">${avatar(row.icon)}${row.name}</span><span>${fmt(row.stake)}</span><span class="result">${row.paid ? fmt(row.at) + 'x' : ''}</span><span class="payout">${row.paid ? fmt(row.stake * row.at) : ''}</span></div>`).join('') : '<p class="emptyRows">Completed round bets appear here.</p>';
-    const wins = rows.filter(row => row.paid);
-    $('totalWin').textContent = fmt(wins.reduce((total, row) => total + row.stake * row.at, 0));
-    $('count').textContent = `${167 + Math.min(13, wins.length)}/180`;
-    $('summaryProgress').style.width = `${Math.max(7, wins.length / Math.max(1, rows.length) * 100)}%`;
+    const view = activity.view(activeTab);
+    const context = `${activeTab}-${view.round?.id ?? 'empty'}`;
+    const list = $('betrows');
+    if (rowContext !== context) {
+      rowContext = context; rowNodes.clear(); list.replaceChildren();
+    }
+    if (!view.rows.length) {
+      if (!list.querySelector('.emptyRows')) {
+        list.innerHTML = `<p class="emptyRows">${activeTab === 'previous' ? 'Completed round bets appear here.' : activeTab === 'top' ? 'Cash-outs appear here as the round progresses.' : 'Waiting for simulated bets.'}</p>`;
+      }
+    } else {
+      list.querySelector('.emptyRows')?.remove();
+      view.rows.forEach((row, index) => {
+        let node = rowNodes.get(row.id);
+        if (!node) {
+          node = document.createElement('div');
+          node.className = 'betrow';
+          node.dataset.rowId = row.id;
+          node.dataset.playerId = String(row.profile.id);
+          node.dataset.stakeCents = String(row.stakeCents);
+          node.innerHTML = `<span class="player">${playerAvatar(row.profile)}<span>${row.profile.name}</span></span><span>${money.format(row.stakeCents / 100)}</span><span class="result"></span><span class="payout"></span>`;
+          rowNodes.set(row.id, node);
+        }
+        if (node.dataset.state !== row.state) {
+          node.classList.toggle('paid', row.state === 'cashed');
+          node.classList.toggle('lost', row.state === 'lost');
+          node.dataset.state = row.state;
+          node.dataset.payoutCents = String(row.payoutCents);
+          node.querySelector('.result').textContent = row.state === 'cashed' ? fmt(row.cashAt) + 'x' : row.state === 'lost' ? '—' : '';
+          node.querySelector('.payout').textContent = row.state === 'cashed' ? money.format(row.payoutCents / 100) : row.state === 'lost' ? '—' : '';
+        }
+        if (list.children[index] !== node) list.insertBefore(node, list.children[index] || null);
+      });
+      while (list.children.length > view.rows.length) list.lastElementChild.remove();
+    }
+    $('totalWin').textContent = money.format(view.totalWinCents / 100);
+    $('count').textContent = `${view.cashOutCount}/${view.betCount}`;
+    $('summaryProgress').style.width = `${view.betCount ? view.cashOutCount / view.betCount * 100 : 0}%`;
+    const leaders = view.leaders.map(profile => profile.id).join(',');
+    if (leaderKey !== leaders) {
+      leaderKey = leaders;
+      $('summaryAvatars').innerHTML = view.leaders.map(playerAvatar).join('');
+    }
   }
 
   function updateWallet() {
@@ -162,7 +203,9 @@
   function startWaiting(now) {
     phase = 'waiting'; phaseStart = now; multiplier = 1; lastRowsUpdate = -1;
     flight.beginRound();
-    liveRows = makeRows();
+    activity.startRound(roundId, cfg.countdownSeconds * 1000);
+    $('spectatorAvatars').innerHTML = activity.current.rows.slice(0, 3).map(row => playerAvatar(row.profile)).join('');
+    $('spectatorCount').textContent = activity.spectatorCount.toLocaleString('en-US');
     panels.forEach(b => {
       if (b.state === 'queued') b.state = 'placed';
       else { b.state = 'idle'; b.cashMult = null; b.cashAmount = null; if (b.auto && !placeBet(b)) { b.auto = false; $('autoBet' + panels.indexOf(b)).checked = false; } }
@@ -175,25 +218,31 @@
     multiplier = target; phase = 'crashed'; phaseStart = now;
     history.unshift(target); history = history.slice(0, 100); renderHistory();
     panels.forEach(b => { if (b.state === 'placed') b.state = 'lost'; });
-    liveRows.forEach(row => { row.paid = row.at < target; });
-    previousRows = liveRows.map(row => ({ ...row })); renderRows();
+    activity.finishRound(target);
+    renderRows();
   }
 
   function render(now) {
     const age = Math.max(0, now - phaseStart), target = cfg.crashPoints[sequence % cfg.crashPoints.length];
+    const activityAge = phase === 'waiting' ? age : cfg.countdownSeconds * 1000 + (phase === 'flying' ? age : duration(target) + age);
+    if (activity.updateSpectators(activityAge)) $('spectatorCount').textContent = activity.spectatorCount.toLocaleString('en-US');
     if (phase === 'waiting') {
       flight.draw(0, 'waiting', age / 1000);
       const remaining = Math.max(0, 1 - age / (cfg.countdownSeconds * 1000));
       $('status').innerHTML = `<div class="waitLogo">Aviator</div><div class="waiting">WAITING FOR NEXT ROUND</div><div class="waitTrack"><span style="transform:scaleX(${remaining})"></span></div>`;
-      if (age >= cfg.countdownSeconds * 1000) { phase = 'flying'; phaseStart = now; }
+      const rowTick = Math.floor(age / activity.refreshMs);
+      if (rowTick !== lastRowsUpdate) { lastRowsUpdate = rowTick; activity.join(age); renderRows(); }
+      if (age >= cfg.countdownSeconds * 1000) {
+        activity.takeoff(); phase = 'flying'; phaseStart = now; lastRowsUpdate = -1; renderRows();
+      }
     } else if (phase === 'flying') {
       const flightAge = Math.min(age, duration(target));
       multiplier = Math.min(target, Math.exp(cfg.growthRate * flightAge / 1000));
       panels.forEach(b => { if (b.state === 'placed' && b.autoCash && multiplier >= b.cashAt && b.cashAt < target) cashOut(b, b.cashAt); });
       flight.draw(flightAge / 1000, 'flying', 0, multiplier);
       $('status').innerHTML = `<div class="mult">${fmt(multiplier)}x</div>`;
-      const rowTick = Math.floor(age / 150);
-      if (rowTick !== lastRowsUpdate) { lastRowsUpdate = rowTick; liveRows.forEach(row => { row.paid = row.at <= multiplier && row.at < target; }); renderRows(); }
+      const rowTick = Math.floor(age / activity.refreshMs);
+      if (rowTick !== lastRowsUpdate) { lastRowsUpdate = rowTick; activity.cashOut(multiplier, target); renderRows(); }
       if (age >= duration(target)) crash(now, target);
     } else {
       flight.draw(duration(target) / 1000, 'crashed', age / 1000, target);
@@ -228,7 +277,6 @@
     const now = performance.now(); if (paused) pausedAt = now;
     startWaiting(now); updateWallet(); render(now);
   });
-  $('summaryAvatars').innerHTML = $('spectatorAvatars').innerHTML = [1,7,3].map(avatar).join('');
   buildControls(); renderHistory(); updateWallet(); startWaiting(performance.now());
   // Pass only public widget settings and a round snapshot, never the whole game config.
   window.mountAviatorPrediction(cfg.prediction, () => {

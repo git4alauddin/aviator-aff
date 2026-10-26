@@ -48,3 +48,15 @@
     .app .predictLauncher { min-width: 116px; padding-inline: 10px; gap: 7px; }
     .app .predictLauncher img { width: 34px; }
 }
+
+/* Stable player rows update in place as synthetic bets join and settle. */
+.player .avatar img { display: block; width: 100%; height: 100%; object-fit: cover; border-radius: 50%; }
+.avatarStack .avatar img { display: block; width: 100%; height: 100%; object-fit: cover; border-radius: 50%; }
+.betrow { font-variant-numeric: tabular-nums; animation: studio-bet-join .25s ease-out; }
+.betrow > span:not(.player) { white-space: nowrap; }
+.betrow.paid { animation: studio-cashout .55s ease-out; }
+.betrow.lost .result, .betrow.lost .payout { color: #646a73; }
+.summaryTop strong { font-variant-numeric: tabular-nums; }
+@keyframes studio-bet-join { from { opacity: .35; } to { opacity: 1; } }
+@keyframes studio-cashout { from { background-color: #456a18; } to { background-color: #203608; } }
+@media (prefers-reduced-motion: reduce) { .betrow, .betrow.paid { animation: none; } }

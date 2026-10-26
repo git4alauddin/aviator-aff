@@ -55,8 +55,8 @@
           <button id="tab-top" data-tab="top" role="tab" aria-selected="false" aria-controls="betrows">Top</button>
         </div>
         <div class="betSummary">
-          <div class="summaryTop"><div class="avatarStack" id="summaryAvatars"></div><strong id="totalWin">264.00</strong></div>
-          <div class="summaryBottom"><span><b id="count">167/180</b> Bets</span><span>Total win <span class="unit">USD</span></span></div>
+          <div class="summaryTop"><div class="avatarStack" id="summaryAvatars"></div><strong id="totalWin">0.00</strong></div>
+          <div class="summaryBottom"><span title="Cashed out / total simulated bets"><b id="count">0/0</b> Bets</span><span>Total win <span class="unit">USD</span></span></div>
           <div class="summaryTrack"><span id="summaryProgress"></span></div>
         </div>
         <div class="tableHead"><span>Player</span><span>Bet <span class="unit">USD</span></span><span>X</span><span>Win <span class="unit">USD</span></span></div>
@@ -79,7 +79,7 @@
             </button>
             <svg id="flightSvg" viewBox="0 0 1000 500" preserveAspectRatio="none" aria-hidden="true"></svg>
             <div id="status" class="centerStatus" role="status"></div>
-            <div class="spectators" title="Illustrative spectators"><div class="avatarStack" id="spectatorAvatars"></div><b>97</b></div>
+            <div class="spectators" title="Illustrative spectators"><div class="avatarStack" id="spectatorAvatars"></div><b id="spectatorCount">0</b></div>
           </div>
         </section>
         <div class="controlRow" id="controlRow" aria-label="Virtual bet controls"></div>
@@ -135,6 +135,7 @@
   </dialog>
   <script src="studio-config.js"></script>
   <script src="flight.js"></script>
+  <script src="js/studio-activity.js"></script>
   <script src="prediction.js"></script>
   <script src="js/draggable-widget-core.js"></script>
   <script src="js/studio-access.js"></script>
